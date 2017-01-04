@@ -1,0 +1,4 @@
+jobclaimfile	pathtorun	commandtorun	savefile	errorsave
+ml10e9start	/Volumes/Data2/singlelayermodel/varying_Gmax_max	out=directionselectivity4cell_learning1('trials',100,'latency',0.200,'lag',0.200,'synapseparams',{'tau2',0.020},'Gmax_max',10e-9,'Gmax_initial',5.355e-9*ones(1,4));	ml10e9.mat	ml10e9error.mat
+ml40e9start	/Volumes/Data2/singlelayermodel/varying_Gmax_max	out=directionselectivity4cell_learning1('trials',100,'latency',0.200,'lag',0.200,'synapseparams',{'tau2',0.020},'Gmax_max',40e-9,'Gmax_initial',5.355e-9*ones(1,4));	ml40e9.mat	ml40e9error.mat
+ml7e9start	/Volumes/Data2/singlelayermodel/varying_Gmax_max	out=directionselectivity4cell_learning1('trials',100,'latency',0.200,'lag',0.200,'synapseparams',{'tau2',0.020},'Gmax_max',7e-9,'Gmax_initial',5.355e-9*ones(1,4));	ml7e9.mat	ml7e9error.mat

@@ -1,0 +1,19 @@
+For any simulations of this sort of thing, I've always used the sigma of the Gaussian window, and set the half-width at half-height of the Gaussian to be equal to the half-width of the sharp-windowed stimulus.  So if we have a sharp window that is 100 pixels in full width, the sigma I would use would be: 50/sqrt(2 ln(2)) ~= 42.466 pixels.  
+
+
+
+
+Dan played either a square wave of width 100 or a gaussian with sigma 100/(sqrt(8 log(2)) and plotted them on the the same axes
+
+I set sigma = width * 0.33 / sqrt(8 log(2))
+
+
+Dan_Gaussian_Width = Dan Sigma * sqrt(8 log(2))
+
+Steve_Sigma = Dan_Sigma / 3
+
+
+Dan_Gaussian_Width = 3 * Steve_Sigma * sqrt(8(log(2))
+
+
+

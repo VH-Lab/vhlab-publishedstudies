@@ -1,0 +1,60 @@
+
+This is the analysis directory for the tree shrew laminar profile project
+
+Work on these files originally began in 
+
+TOOLS/VH_matlab_code/FitzLabTools/simplecomplex
+     this directory contains both analysis files for the physiology as well as
+     files for a model that steve was messing around with
+
+
+Raw data files are on KFC at Z:\data\treeshrew_transLGNctx\
+
+
+To get started one can plot
+
+prefix = 'Z:\data\treeshrew_transLGNctx\';
+expernames = {'2008-05-22','2008-05-30','2008-06-05','2008-06-18','2008-06-25','2008-07-10','2008-07-23','2008-08-07','2008-08-14','2008-08-20','2008-09-25','2008-10-14','2008-10-22'};
+
+[cells,cellnames] = doplotsimplecomplexori5(prefix, expernames);
+
+
+
+% how do we look at the cells that are in 2008-05-30? for example?
+
+ds = dirstruct([prefix expernames{3}]);
+[cells,cellnames] = load2celllist(getexperimentfile(ds),'cell*','-mat');
+
+A = findassociate(cells{125},'','','')
+
+ % how can I list all of the associates for a given cell?
+
+{A.type}'
+
+
+ % direction index used in nature paper, varies between 0 and 1
+
+'SP F0 Ach OT Fit Direction index blr'
+
+B = findassociate(cells{125},'SP F0 Ach SF Response curve','','')
+
+B.data is (first row is spatial frequencies we tested, 2nd row is mean response, 3rd row is standard deivation, 4th row is standard error)
+
+    'SP F0 Ach SF Response curve'  % whole response curve  hint:  myerrorbar(B.data(1,:),B.data(2,:),B.data(4,;),B.data(4,:))
+    'SP F0 Ach SF Pref'   % the SF with the highest response
+    'SP F0 Ach SF Low'  % this is the low SF cut off
+    'SP F0 Ach SF High' % this is the high SF cut off
+    'SP F0 Ach SF sig resp p'  % this is the P value on whether the differences of responses across SFs are significant or not
+    'SP F0 Ach SF sig resp'  % this is 0/1 based on whether the P value is 0.05 or less
+    'SP F0 Ach SF visual response p'  % this is the P value of whether the differences across all responses including blank are significant
+    'SP F0 Ach SF visual response'
+    'SP F0 Ach SF DOG Pref'  % this is a difference of gaussian fit, which is generally lousy
+    'SP F0 Ach SF DOG Low'
+    'SP F0 Ach SF DOG High'
+    'SP F0 Ach SF DOG R2'
+    'SP F0 Ach SF DOG Fit'
+
+
+ % how can I find which cells have some data
+
+for i=1:length(cells), if ~isempty(findassociate(cells{i},'SP F0 Ach SF Response curve','','')), i, end; end;

@@ -1,0 +1,29 @@
+
+%pv = previewprairieview('C:\Users\fitz_lab\ferret_direction\minis\2006-08-17\t00001',50,1);
+%pv = pv(10:end-10,10:end-10);
+
+
+
+i = 1; r = 1;
+while i<=8,
+	imstart = i;
+	im_ = zeros(3*size(indimages{1},1),3*size(indimages{1},2));
+	for j=1:3,
+		for k=1:3,
+			if i<=8,
+                if ~(j==2&k==2)
+				im_(1+(j-1)*size(indimages{i},1):j*size(indimages{i},1),1+(k-1)*size(indimages{i},2):k*size(indimages{i},2))=indimages{i};
+				i=i+1;
+                else, 
+                    im_(1+(j-1)*size(indimages{i},1):j*size(indimages{i},1),1+(k-1)*size(indimages{i},2):k*size(indimages{i},2))=pv;
+                end;
+			end;
+		end;
+	end;
+	imend = i-1;
+	if plotit,
+		imagedisplay(im_,'Title',['Single conditions ' int2str(imstart) ' to ' int2str(imend) ' of ' name '.']);
+	end;
+	result{r} = im_;
+	r = r + 1;
+end;

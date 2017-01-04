@@ -1,0 +1,55 @@
+%
+
+alpha = 1;
+T = 1;
+
+Wx = linspace(0,1,11);
+Wy = linspace(0,1,11);
+
+dWx = []; dWy = []; dDI = []; DI = []; Rup = []; Rdown = []; DI2 = []; Rup2 = []; Rdown2 = []; WX = []; WY = [];
+Rup3 = []; Rdown3 = []; DI3 = [];
+
+dT = [];
+
+amp = 1.01;
+
+for x=1:length(Wx),
+	for y=1:length(Wy),
+		WY(x,y) = Wy(y);
+		WX(x,y) = Wx(x);
+		Rup(x,y) = alpha * (2*rectify(Wy(y)-T) + rectify(2*Wx(x)-T));
+		Rdown(x,y) = alpha * (2*rectify(Wx(x)-T) + rectify(2*Wy(y)-T));
+		DI(x,y) = (Rup(x,y) - Rdown(x,y))/(Rup(x,y)+Rdown(x,y));
+		dWx(x,y) = (amp-1)*Wx(x);
+		dWy(x,y) = 0;
+		dT(x,y) = 0.0025;
+		Rup2(x,y) = alpha * (2*rectify(Wy(y)-T) + rectify(2*amp*Wx(x)-T));
+		Rdown2(x,y) = alpha * (2*rectify(amp*Wx(x)-T) + rectify(2*Wy(y)-T));
+		DI2(x,y) = (Rup2(x,y) - Rdown2(x,y))/(Rup2(x,y)+Rdown2(x,y));
+		Rup3(x,y) = alpha * (2*rectify(Wy(y)-(T+dT(x,y))) + rectify(2*(amp*Wx(x))-(T+dT(x,y))));
+		Rdown3(x,y) = alpha * (2*rectify(amp*Wx(x)-(T+dT(x,y))) + rectify(2*Wy(y)-(T+dT(x,y))));
+		DI3(x,y) = (Rup3(x,y) - Rdown3(x,y))/(Rup3(x,y)+Rdown3(x,y));
+	end;
+end;
+	
+dDI = DI2 - DI;
+
+dDI2 = DI3 - DI;
+
+figure;
+subplot(2,2,1);
+quiver(WX,WY,dWx,dWy,'g')
+box off;
+subplot(2,2,2);
+quiver(WX,DI,dWx,dDI,'b')
+box off;
+
+subplot(2,2,3);
+quiver(WX,WY,dWx-dT,dWy-dT,'g')
+box off;
+subplot(2,2,4);
+quiver(WX,DI,dWx-dT,dDI2,'b')
+box off;
+
+
+
