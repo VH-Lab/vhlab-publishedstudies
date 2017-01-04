@@ -1,0 +1,14 @@
+{
+  "name": "vhlab_publishedstudies",
+  "homepage": "https://github.com/VH-Lab/vhlab_publishedstudies",
+  "authors": [
+    "[Stephen D. Van Hooser] <[vanhoosr@brandeis.edu]>"
+  ],
+  "description": "Code for data analysis and figure generation from specific VH lab projects and collaborations",
+  "main": "",
+  "license": "MIT"
+  "dependencies:" {
+	  "vhlab_toolbox": "~1.0"
+	  "vhlab_thirdparty": "~1.0"
+  }
+}
