@@ -40,9 +40,18 @@ function im = plototdirstack(ds_or_cells,stackname,varargin)
 %  OTGRAY         0/1       Should OT cells be gray?  Default 1.
 %  OTDIRGREENBLUE 0/1       Should OT cells be green and dir cells blue? Default 0.
 
-pthreshold=0.05;colorscale=1;rotate=0;imagesize=[512 512];dirthresh=0.5;dir_assoc='OT Fit Direction index';
-ot_assoc = 'OT Fit Pref'; pthreshold_assoc = 'OT visual response p'; otdirgreenblue = 0;
-supressplot=0;otgray = 1; transparency = 0;
+pthreshold=0.05;
+colorscale=1;
+rotate=0;
+imagesize=[512 512];
+dirthresh=0.5;
+dir_assoc='OT Fit Direction index';
+ot_assoc = 'OT Fit Pref';
+pthreshold_assoc = 'OT visual response p';
+otdirgreenblue = 0;
+supressplot=0;
+otgray = 1;
+transparency = 0;
 
 
 if isa(ds_or_cells,'dirstruct'),
@@ -98,7 +107,7 @@ for i=1:length(cells),
             	else, cols(i,:) = [-1 -1 -1];
             	end;
             elseif otdirgreenblue,
-            	if dias.data>dirthresh, cols(i,:) = [ 0 0 1];
+            	if dias.data>dirthresh, cols(i,:) = [ 0 1 1];
             	else, cols(i,:) = [ 0 1 0];
             	end;
             	symb(i) = 3*(dias.data>=dirthresh)+7*(dias.data<dirthresh);

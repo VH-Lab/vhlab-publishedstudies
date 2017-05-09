@@ -42,9 +42,20 @@ function im = plototdirstack(ds_or_cells,stackname,varargin)
 %  DIRGREENBLUECHANGE 0/1   Should DS cells be green or blue on PREF; Size of symbol on ratio of change? Default 0.
 %  TRAINDIR (value)         taining angle [0 360] 
 
-pthreshold=0.05;colorscale=1;rotate=0;imagesize=[512 512];dirthresh=0.5;dir_assoc='OT Fit Direction index';
-ot_assoc = 'OT Fit Pref'; pthreshold_assoc = 'OT visual response p'; otdirgreenblue = 0; dirgreenblue = 0;
-supressplot=0;otgray = 1; transparency = 0; traindir = 0;
+pthreshold=0.05;
+colorscale=1;
+rotate=0;
+imagesize=[512 512];
+dirthresh=0.5;
+dir_assoc='OT Fit Direction index';
+ot_assoc = 'OT Fit Pref';
+pthreshold_assoc = 'OT visual response p';
+otdirgreenblue = 0;
+dirgreenblue = 0;
+supressplot=0;
+otgray = 1;
+transparency = 0;
+traindir = 0;
 
 
 if isa(ds_or_cells,'dirstruct'),
@@ -92,11 +103,7 @@ cells=cells(mycells);
 symb = []; cols = []; symsize = [];
 for i=1:length(cells),
         dias=findassociate(cells{i},dir_assoc,'','');
-         dias1=findassociate(cells{i},dir_assoc1,'','');
-         dias2=findassociate(cells{i},dir_assoc2,'','');
         prefas=findassociate(cells{i},ot_assoc,'','');
-         prefas1=findassociate(cells{i},ot_assoc1,'','');
-         prefas2=findassociate(cells{i},ot_assoc2,'','');
         if angdiffwrap(prefas.data-traindir,360)>=90,dias.data = -dias.data; end;
         %dias.data,
             if ~isempty(dias),
@@ -129,7 +136,11 @@ for i=1:length(cells),
                 if abs(dias.data)<=0.5, symsize(i,[1 2]) = [8 8];sizeref = 8; end; 
                 if abs(dias.data)>0.5, symsize(i,[1 2]) = [12 12];sizeref = 12; end; 
                 if dir_assoc(4) == 'M',
-                    
+                    dias1=findassociate(cells{i},dir_assoc1,'','');
+                    dias2=findassociate(cells{i},dir_assoc2,'','');
+                    prefas1=findassociate(cells{i},ot_assoc1,'','');
+                    prefas2=findassociate(cells{i},ot_assoc2,'','');
+
                     if dias2.data>dias1.data, symsize(i,[1 2]) = [sizeref+2 sizeref+2];end;
                     if dias2.data<dias1.data, symsize(i,[1 2]) = [sizeref-2 sizeref-2];end;
                     if dias2.data==dias1.data, symsize(i,[1 2]) = [sizeref sizeref];end;

@@ -36,15 +36,26 @@ function im = plototdirstack(ds_or_cells,stackname,varargin)
 %                           'OT Direction index 2 Peak'
 %  OT_ASSOC    string       'OT Pref', 'OT Fit Pref', or
 %                           'OT Fit Pref 2 Peak'
-%  OTGRAY         0/1       Should OT cells be gray?  Default 1.
+%  OTGRAY         0/1       Should OT cells be gray?  Default 0.
 %  OTDIRGREENBLUE 0/1       Should OT cells be green and dir cells blue? Default 0.
-%  DIRGREENBLUE   0/1       Should DS cells be green or blue on PREF; Size of symbol on DI? Default 0.
+%  DIRGREENBLUE   0/1       Should DS cells be green or blue on PREF; Size of symbol on DI? Default 1.
 %  DIRGREENBLUECHANGE 0/1   Should DS cells be green or blue on PREF; Size of symbol on ratio of change? Default 0.
 %  TRAINDIR (value)         taining angle [0 360] 
 
-pthreshold=0.05;colorscale=1;rotate=0;imagesize=[512 512];dirthresh=0.5;dir_assoc='OT Fit Direction index';
-ot_assoc = 'OT Fit Pref'; pthreshold_assoc = 'OT visual response p'; otdirgreenblue = 0; dirgreenblue = 1;
-supressplot=0;otgray = 0; transparency = 0; traindir = 0;
+pthreshold=0.05;
+colorscale=1;
+rotate=0;
+imagesize=[512 512];
+dirthresh=0.5;
+dir_assoc='OT Fit Direction index';
+ot_assoc = 'OT Fit Pref';
+pthreshold_assoc = 'OT visual response p';
+otdirgreenblue = 0;
+dirgreenblue = 1;
+supressplot=0;
+otgray = 0;
+transparency = 0;
+traindir = 0;
 
 
 if isa(ds_or_cells,'dirstruct'),
@@ -90,7 +101,7 @@ end;
 cells=cells(mycells);
 
 symb = []; cols = []; symsize = [];
-traindir,
+
 for i=1:length(cells),
         dias=findassociate(cells{i},dir_assoc,'','');
 %          dias1=findassociate(cells{i},dir_assoc1,'','');
@@ -117,16 +128,38 @@ for i=1:length(cells),
 	            	symb(i) = 4*(dias.data>=dirthresh)+8*(dias.data<dirthresh);
 			symsize(i,[1 2]) = [12 12];
 		elseif dirgreenblue,
-			if dias.data>0.0, cols(i,:) = [0 1 1];%[1 0 0]red [0 1 0]green [0 0 1]blue [1 1 0]yellow
-			else, cols(i,:) = [1 1 0];
+			if dias.data>0.0,
+                cols(i,:) = [0 1 1];
+			else,
+                cols(i,:) = [1 1 0];
 			end;
 			symb(i) = 3*(abs(dias.data)>=dirthresh)+7*(abs(dias.data)<dirthresh);
-			if abs(dias.data)<=0.3, symsize(i,[1 2]) = [6 6];end;
-			if abs(dias.data)>0.3 & abs(dias.data<0.5), symsize(i,[1 2]) = [8 8];end;
-			if abs(dias.data)>0.5, symsize(i,[1 2]) = [12 12];end;
+			if abs(dias.data)<=0.3,
+                symsize(i,[1 2]) = [6 6];
+            end;
+			if abs(dias.data)>0.3 & abs(dias.data<0.5),
+                symsize(i,[1 2]) = [8 8];
+            end;
+			if abs(dias.data)>0.5,
+                symsize(i,[1 2]) = [12 12];
+            end;
+		elseif dircontinuous,
+            [dummy,dummy,cols(i,:)] = angle2ycgr(mod(prefas.data-45,360)); 
+			symb(i) = 3*(abs(dias.data)>=dirthresh)+7*(abs(dias.data)<dirthresh);
+			if abs(dias.data)<=0.3,
+                symsize(i,[1 2]) = [6 6];
+            end;
+			if abs(dias.data)>0.3 & abs(dias.data<0.5),
+                symsize(i,[1 2]) = [8 8];
+            end;
+			if abs(dias.data)>0.5,
+                symsize(i,[1 2]) = [12 12];
+            end;            
 		elseif dirgreenbluechange,
-			if dias.data>0, cols(i,:) = [ 1 0 0];
-			else, cols(i,:) = [ 0 1 0];
+			if dias.data>0,
+                cols(i,:) = [ 1 0 0];
+			else,
+                cols(i,:) = [ 0 1 0];
 			end;
 			symb(i) = 4*(abs(dias.data)>=dirthresh)+8*(abs(dias.data)<dirthresh);
 			% here decide size of symbol
@@ -137,10 +170,15 @@ for i=1:length(cells),
 				if dias2.data<dias1.data, symsize(i,[1 2]) = [sizeref-2 sizeref-2];end;
 				if dias2.data==dias1.data, symsize(i,[1 2]) = [sizeref sizeref];end;
 			end;
-		elseif (dias.data>dirthresh), cols(i,:) = [-1 -1 -1];
-		else, cols(i,:) = [ 0.7 0.7 0.7];
+		elseif (dias.data>dirthresh),
+            cols(i,:) = [-1 -1 -1];
+		else,
+            cols(i,:) = [ 0.7 0.7 0.7];
 		end;
-        else, symb(i) = 0; cols(i,:) = [ -1 -1 -1]; symsize(i,[1 2]) = [12 0];
+        else,
+            symb(i) = 0;
+            cols(i,:) = [ -1 -1 -1];
+            symsize(i,[1 2]) = [12 0];
         end;
 end;
 %g = gca;
