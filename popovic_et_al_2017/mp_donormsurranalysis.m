@@ -1,12 +1,15 @@
-function [cellinfo,cells,cellnames] = mp_donormsurranalysis(prefix)
+function [cellinfo,cells,cellnames] = mp_donormsurranalysis(prefix,expernames)
 % MP_DONORMSURRANALYSIS - perform analysis for MP's normalization/surround experiments
 %
-%  [CELLINFO,CELLS,CELLNAMES] = MP_DONORMSURRANALYSIS(PREFIX)
+%  [CELLINFO,CELLS,CELLNAMES] = MP_DONORMSURRANALYSIS(PREFIX,EXPERMAMES)
 %
 %  Load several pieces of information about responses from cells.
 %
 %  PREFIX is the directory to examine. If it is not provided, 
 %  '/Volumes/Data3/marjenap/' is assumed
+%
+%  EXPERNAMES is the list of experiments to be examined. If not given, then
+%  Marjena's experiments for Popovic et al. 2017 are assumed.
 %
 %  See the code for the experiment days.
 % 
