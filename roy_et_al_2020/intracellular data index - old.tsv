@@ -1,0 +1,30 @@
+Date	cell no	Age	spike2channel	tuning curve	reps_tuningcurve	notes_tuningcurve	spike_quality	simple ?	rev corr	reps_revcorr	bar width	notes_revcorr	last updated	intrinsic props	B seq, 1 Hz	B seq, 4 Hz	histology (y/n)	layer	extra notes
+4/18/2014	8	40	21	t2	1:5	great	1	0	t4	1:40	20	angle matched	2/6/2017						
+4/18/2014	10	40	21	t19	1:5	great	1	0	t20	1:25	10	angle matched	2/6/2017						
+4/25/2014	14	44	21	t5	1:6	great	1	0	nan	nan	nan	nan	2/6/2017						
+4/25/2014	15	44	21	t6	2:5	great	1	0	nan	nan	nan	nan	2/6/2017						
+4/25/2014	16	44	21	t8	1:4	good	1	0	nan	nan	nan	nan	2/6/2017						
+5/7/2014	25	48	21	t3	1:5	great	1	1	t4	1:12	10	angle matched	2/6/2017						
+5/7/2014	26	48	21	t5	1:5	great	1	1	t6	1:6	20	angle matched	2/6/2017						
+5/7/2014	27	48	21	t8	1:5	good	1	0	t9	1:28	20	angle matched	2/6/2017						
+5/28/2014	55	51	21	t2	1:3	ok	1	0	nan	nan	nan	nan	2/6/2017						
+5/28/2014	56	51	21	t4	2:4	good	1	1	t5	1:7	20	angle matched	2/6/2017						
+5/28/2014	57	51	21	t6	1:4	good	1	0	t7	10:39	20	angle matched	2/6/2017						
+5/28/2014	58	51	21	t13	1:3	great	1	1	t14	1:19	40	angle matched	2/6/2017						
+5/28/2014	59	51	21	t15	1:3	great	1	1	t16	2:13	40	angle matched	2/6/2017						
+5/28/2014	60	51	21	t17	1:3	great.  but massive vm drift	1	1	t18	2:30	40	angle matched	2/6/2017						
+5/28/2014	61	51	21	t21	1:3	good	1	0	nan	nan	nan	nan	2/6/2017						
+6/6/2014	63	57	21	t2	1:5	good	1	1	t3	1:12	40	angle matched	2/6/2017						
+6/6/2014	65	57	21	t6	1:3	good	1	1	nan	nan	nan	nan	2/6/2017						
+6/6/2014	66	57	21	t7	1:5	good	1	0	nan	nan	nan	nan	2/6/2017						
+6/6/2014	67	57	21	t8	1:3	good	1	1	t9	1:50	40	angle matched	2/6/2017						
+6/6/2014	68	57	21	t16	1:3	great	1	1	t17	1:6,9:47	40	angle matched; spotty strf	2/6/2017						
+5/24/2016	80	54	1	t3	1:5	good	1	1	t4	1:30	40	angle matched	2/6/2017						
+5/24/2016	81	54	1	t5	1:5	great	1	0	nan	nan	nan	nan	2/6/2017						
+5/26/2016	84	56	1	t1	1:5	great	1	1	nan	nan	nan	ran wrong SF	2/6/2017		t4	t3			
+5/26/2016	86	56	1	t8	1:5	great; no blank	1	1	t9	1:40	40	angle matched	2/6/2017		t11	t10			
+7/13/2016	95	55	1	t1	1:2	great;pad 5 sec end of trace	1	1	t2	1:13	20	angle matched	2/6/2017						
+7/13/2016	96	55	1	t3	1:3	good	1	1	t4	1:12	20	angle matched; spotty strf	2/6/2017						
+8/3/2016	106	56	1	t3	1:3	good	1	0	t4	1:9,12:35	20	angle matched	2/6/2017		t6	t5			also TF, SF tuning curves
+8/5/2016	107	58	1	t1	1:4	ok.	1	0	t2	1:29	20	angle w/in 30 deg	2/6/2017						
+2/7/2017	119	60	1	t1	1:3	good	1	1	t2	1:10,20:34	20	angle matched	2/7/2017						
