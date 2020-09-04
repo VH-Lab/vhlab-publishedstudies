@@ -25,8 +25,8 @@ N = numel(et);
 for n=1:N,
  
 	extract_p_name = ['manually_selected ' sharpprobe.id() '.' et(n).epoch_id];
-	[w,wp,spikewaves_doc] = sapp.load_spikewaves_epoch(element_vmcorrected,et(n).epoch_id,extract_p_name); %load waveforms
-	st = sapp.load_spiketimes_epoch(element_vmcorrected,et(n).epoch_id,extract_p_name); %load spike times
+	[w,wp,spikewaves_doc] = sapp.loaddata_appdoc('spikewaves',element_vmcorrected,et(n).epoch_id,extract_p_name); %load waveforms
+	st = sapp.loaddata_appdoc('spiketimes',element_vmcorrected,et(n).epoch_id,extract_p_name); %load spike times
     
 	z = squeeze(w); %this is a squeezed matrix of columns, one column per spike wave
     

@@ -53,8 +53,7 @@ for n=1:N,
 	spike_extraction_parameters.read_time = 1000; % long time, its faster
 
 	extract_p_name = ['manually_selected ' sharpprobe.id() '.' et(n).epoch_id];
-	sapp.clear_extraction_parameters(extract_p_name);
-	sapp.add_extraction_doc(extract_p_name,spike_extraction_parameters);
+	sapp.add_appdoc('extraction_parameters', spike_extraction_parameters, 'Replace', extract_p_name);
 
 	sapp.extract(element_vmcorrected,et(n).epoch_id,extract_p_name,1);
 end;
