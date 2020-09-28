@@ -13,7 +13,7 @@ function [firingrate_observations, voltage_observations, timepoints] = intracell
 
 epochid = [];
 
-assign(varargin{:});
+vlt.data.assign(varargin{:});
 
 firingrate_observations = [];
 voltage_observations = [];
@@ -39,9 +39,9 @@ if numel(mydoc)>1, error(['More than a single match.']); end;
 
 if numel(mydoc)==0, return; end;
 
-mydoc = celloritem(mydoc,1);
+mydoc = vlt.data.celloritem(mydoc,1);
 
-struct2var(mydoc.document_properties.binnedspikeratevm);
+vlt.data.struct2var(mydoc.document_properties.binnedspikeratevm);
 
 plot(voltage_observations, firingrate_observations,'bo');
 xlabel('Voltage (Vm-rest)');
@@ -53,13 +53,13 @@ Xn = [];
 Yint = [];
 
 if ~isempty(firingrate_observations),
-	[Yn,Xn,Yint] = slidingwindowfunc(voltage_observations, firingrate_observations, ...
+	[Yn,Xn,Yint] = vlt.math.slidingwindowfunc(voltage_observations, firingrate_observations, ...
 		min(voltage_observations), 0.001, max(voltage_observations), 0.002, 'mean',0);
-	[Nn] = slidingwindowfunc(voltage_observations, firingrate_observations, ...
+	[Nn] = vlt.math.slidingwindowfunc(voltage_observations, firingrate_observations, ...
 		min(voltage_observations), 0.001, max(voltage_observations), 0.002, 'numel',0);
 
 	hold on
-	h=myerrorbar(Xn,Yn,Yint,Yint,'r');
+	h=vlt.plot.myerrorbar(Xn,Yn,Yint,Yint,'r');
 	set(h,'linewidth',2);
 end
 

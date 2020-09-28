@@ -15,7 +15,7 @@ function intracell_strf_pipeline(expdir, varargin)
 % extract_spikewaves (1)                | Should we extract spikewaves?
 % analyze_spikewaves (1)                | Should we analyze spikewaves?
 %
-% See also: NAMEVALUEPAIR
+% See also: vlt.data.namevaluepair
 %
 
 
@@ -34,9 +34,9 @@ plot_residuals = 1;
 generate_sim_fit = 1;
 analyze_fits = 1;
 
-assign(varargin{:});
+vlt.data.assign(varargin{:});
 
-s=workspace2struct
+s=vlt.data.workspace2struct
 
 [parentdir,expname] = fileparts(expdir)
 

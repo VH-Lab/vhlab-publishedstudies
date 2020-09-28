@@ -11,7 +11,7 @@ function intracell_strf_residualanalysis(app, sharpprobe, stimprobe, ndi_spike_e
 
 displayresults = 1;
 
-assign(varargin{:});
+vlt.data.assign(varargin{:});
 
 E = app.session;
 
@@ -30,7 +30,7 @@ for n=1:N,
 
 	if ~isempty(vmresp_resid_doc),
 		out = intracell_strf_residual2waves(E, vmresp_resid_doc);
-		struct2var(out);
+		vlt.data.struct2var(out);
 	else,
 		return; % noelement to do
 	end;

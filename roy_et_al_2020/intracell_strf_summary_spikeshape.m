@@ -8,7 +8,7 @@ function spikeshape_struct = intracell_strf_summary_spikeshape(isstudy)
 % ISSTUDY should be the output of INTRACELL_STRF_SUMMARY_SETUP.
 % 
 
-spikeshape_struct = emptystruct('spike_summary', 'name','reference','young');
+spikeshape_struct = vlt.data.emptystruct('spike_summary', 'name','reference','young');
 
 for i=1:numel(isstudy),
 
@@ -40,9 +40,9 @@ for i=1:numel(isstudy),
 			[ds, ts, timeref_]=stimprobe.readtimeseries(timeref,interval(1,1),interval(1,2));
 			stim_onsetoffsetid = [ts.stimon ts.stimoff ds.stimid];
 
-			isblank = structfindfield(ds.parameters,'isblank',1);
+			isblank = vlt.data.structfindfield(ds.parameters,'isblank',1);
 			notblank = setdiff(1:numel(ds.parameters),isblank);
-			if eqlen(structwhatvaries(ds.parameters(notblank)),{'angle'})
+			if vlt.data.eqlen(vlt.data.structwhatvaries(ds.parameters(notblank)),{'angle'})
 				isdirectionepoch = 1;
 			end;
 

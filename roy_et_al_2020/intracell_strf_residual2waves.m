@@ -10,7 +10,7 @@ function [out] = intracell_strf_residual2waves(E, vmresp_resid_doc)
 
 if ~isempty(vmresp_resid_doc),
 	vmresp_binarydoc = E.database_openbinarydoc(vmresp_resid_doc{1});
-	[Y,X] = vhsb_read(vmresp_binarydoc,-Inf,Inf);
+	[Y,X] = vlt.file.custom_file_formats.vhsb_read(vmresp_binarydoc,-Inf,Inf);
 	vmresp_binarydoc = E.database_closebinarydoc(vmresp_binarydoc);
 
 	% now unpack
@@ -28,5 +28,5 @@ if ~isempty(vmresp_resid_doc),
 	end;
 end;
 
-out = var2struct('TT','raw_data','VV','rawer_data','res', 'spike_data', 'gof');
+out = vlt.data.var2struct('TT','raw_data','VV','rawer_data','res', 'spike_data', 'gof');
 

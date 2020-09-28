@@ -13,7 +13,7 @@ set(h,'facecolor',c);
 
 hold on;
 
-h2 = myerrorbar(x,mn,nanstderr(y),nanstderr(y));
+h2 = vlt.plot.myerrorbar(x,mn,vlt.data.nanstderr(y),vlt.data.nanstderr(y));
 set(h2,'color','k','linewidth',2);
 delete(h2(2));
 

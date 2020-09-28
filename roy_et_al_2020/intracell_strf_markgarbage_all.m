@@ -48,7 +48,7 @@ for i=1:numel(z),
 
 		[data,t,timeref] = stimprobe{1}.readtimeseriesepoch(epochid, 0, Inf);
 
-		repid = stimids2reps(data.stimid, numel(unique(data.stimid)));
+		repid = vlt.neuro.stimulus.stimids2reps(data.stimid, numel(unique(data.stimid)));
 		first_good_rep = find(repid==z(i).reps_tuningcurve(1),1,'first');
 		last_good_rep = find(repid==z(i).reps_tuningcurve(end),1,'last');
 

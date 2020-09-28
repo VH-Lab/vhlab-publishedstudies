@@ -11,7 +11,7 @@ function intracell_strf_residualanalysis(app, sharpprobe, stimprobe, ndi_spike_e
 
 displayresults = 1;
 
-assign(varargin{:});
+vlt.data.assign(varargin{:});
 
 E = app.session;
 
@@ -35,9 +35,9 @@ for n=1:N,
 	[ds, ts, timeref_]=stimprobe.readtimeseries(timeref,interval(1,1),interval(1,2));
 	stim_onsetoffsetid = [ts.stimon ts.stimoff ds.stimid];
 	    
-	isblank = structfindfield(ds.parameters,'isblank',1);
+	isblank = vlt.data.structfindfield(ds.parameters,'isblank',1);
 	notblank = setdiff(1:numel(ds.parameters),isblank);
-	if eqlen(structwhatvaries(ds.parameters(notblank)),{'angle'})
+	if vlt.data.eqlen(vlt.data.structwhatvaries(ds.parameters(notblank)),{'angle'})
 		isdirectionepoch = 1;
 	end;
 	    
@@ -70,12 +70,12 @@ for n=1:N,
 			vm_fr{i} = [];
 			vm_fr_bystim{i} = [];
 			for j=1:numel(vm_tune_doc{i}{1}.document_properties.tuning_curve.stimulus_presentation_number),
-				if ~eqlen( vm_tune_doc{i}{1}.document_properties.tuning_curve.stimulus_presentation_number{j},...
+				if ~vlt.data.eqlen( vm_tune_doc{i}{1}.document_properties.tuning_curve.stimulus_presentation_number{j},...
 					spike_tune_doc{i}{1}.document_properties.tuning_curve.stimulus_presentation_number{j}),
 					error(['mismatch in stimulus presentation numbers in individidual response records.']);
 				end;
 				if i==1,
-					pres_numbers = cat(1,pres_numbers,colvec(spike_tune_doc{i}{1}.document_properties.tuning_curve.stimulus_presentation_number{j}));
+					pres_numbers = cat(1,pres_numbers,vlt.data.colvec(spike_tune_doc{i}{1}.document_properties.tuning_curve.stimulus_presentation_number{j}));
 				end;
 				vm_resps_here = vm_tune_doc{i}{1}.document_properties.tuning_curve.individual_responses_real{j} + ...
 					sqrt(-1)*vm_tune_doc{i}{1}.document_properties.tuning_curve.individual_responses_imaginary{j};
@@ -85,8 +85,8 @@ for n=1:N,
 					sqrt(-1)*vm_tune_doc{i}{1}.document_properties.tuning_curve.individual_responses_imaginary{j};
 				s_control_resps_here = spike_tune_doc{i}{1}.document_properties.tuning_curve.control_individual_responses_real{j} + ...
 					sqrt(-1)*vm_tune_doc{i}{1}.document_properties.tuning_curve.control_individual_responses_imaginary{j};
-				vm_fr{i} = cat(1,vm_fr{i},[ colvec(vm_resps_here-0*vm_control_resps_here) colvec(s_resps_here-0*s_control_resps_here) ]);
-				vm_fr_bystim{i}{j} = [ colvec(vm_resps_here-0*vm_control_resps_here) colvec(s_resps_here-0*s_control_resps_here) ];
+				vm_fr{i} = cat(1,vm_fr{i},[ vlt.data.colvec(vm_resps_here-0*vm_control_resps_here) vlt.data.colvec(s_resps_here-0*s_control_resps_here) ]);
+				vm_fr_bystim{i}{j} = [ vlt.data.colvec(vm_resps_here-0*vm_control_resps_here) vlt.data.colvec(s_resps_here-0*s_control_resps_here) ];
 			end;
 		end;
 		
@@ -136,10 +136,10 @@ for n=1:N,
 			if numel(TT{i})>=2,
 				[spike_data_here,t_spikes,t_refspikes] = ndi_spike_element.readtimeseries(timeref, ...
 					stim_onsetoffsetid(presentations_of_maxstimid(i),1), stim_onsetoffsetid(presentations_of_maxstimid(i),2));
-				spike_indexes = point2samplelabel(t_spikes,TT{i}(2)-TT{i}(1), t(1));
+				spike_indexes = vlt.signal.point2samplelabel(t_spikes,TT{i}(2)-TT{i}(1), t(1));
 				spike_data{i}(spike_indexes) = 1;
 			end;
-			[gof(i),total_power(i),residual_power(i)] = gof_totalpower(raw_data{i}(:),VV{i}(:));
+			[gof(i),total_power(i),residual_power(i)] = vlt.stats.gof_totalpower(raw_data{i}(:),VV{i}(:));
 		end;
 
 		vmneuralresponseresiduals.element_epochid = et(n).epoch_id;
@@ -163,7 +163,7 @@ for n=1:N,
 		E.database_add(vmresp_resid_doc);
 
 		vmresp_binarydoc = E.database_openbinarydoc(vmresp_resid_doc);
-		vhsb_write(vmresp_binarydoc, cat(1,TT{:}), [cat(1,raw_data{:}) cat(1, VV{:}) cat(1, rawer_data{:}) cat(1,res{:}) cat(1,spike_data{:})],'use_filelock',0);
+		vlt.file.custom_file_formats.vhsb_write(vmresp_binarydoc, cat(1,TT{:}), [cat(1,raw_data{:}) cat(1, VV{:}) cat(1, rawer_data{:}) cat(1,res{:}) cat(1,spike_data{:})],'use_filelock',0);
 		vmresp_binarydoc = E.database_closebinarydoc(vmresp_binarydoc);
 
 		% now opposite direction
@@ -208,10 +208,10 @@ for n=1:N,
 			if numel(TT{i})>=2,
 				[spike_data_here,t_spikes,t_refspikes] = ndi_spike_element.readtimeseries(timeref, ...
 					stim_onsetoffsetid(presentations_of_minstimid(i),1), stim_onsetoffsetid(presentations_of_minstimid(i),2));
-				spike_indexes = point2samplelabel(t_spikes,TT{i}(2)-TT{i}(1), t(1));
+				spike_indexes = vlt.signal.point2samplelabel(t_spikes,TT{i}(2)-TT{i}(1), t(1));
 				spike_data{i}(spike_indexes) = 1;
 			end;
-			[gof(i),total_power(i),residual_power(i)] = gof_totalpower(raw_data{i}(:),VV{i}(:));
+			[gof(i),total_power(i),residual_power(i)] = vlt.stats.gof_totalpower(raw_data{i}(:),VV{i}(:));
 		end;
 
 		vmneuralresponseresiduals.element_epochid = et(n).epoch_id;
@@ -235,7 +235,7 @@ for n=1:N,
 		E.database_add(vmresp_resid_doc);
 
 		vmresp_binarydoc = E.database_openbinarydoc(vmresp_resid_doc);
-		vhsb_write(vmresp_binarydoc, cat(1,TT{:}), [cat(1,raw_data{:}) cat(1, VV{:}) cat(1, rawer_data{:}) cat(1,res{:}) cat(1,spike_data{:})],'use_filelock',0);
+		vlt.file.custom_file_formats.vhsb_write(vmresp_binarydoc, cat(1,TT{:}), [cat(1,raw_data{:}) cat(1, VV{:}) cat(1, rawer_data{:}) cat(1,res{:}) cat(1,spike_data{:})],'use_filelock',0);
 		vmresp_binarydoc = E.database_closebinarydoc(vmresp_binarydoc);
 
 		% now blank stimulus
@@ -283,10 +283,10 @@ for n=1:N,
 			if numel(TT{i})>=2,
 				[spike_data_here,t_spikes,t_refspikes] = ndi_spike_element.readtimeseries(timeref, ...
 					stim_onsetoffsetid(blank_stimpres(i),1), stim_onsetoffsetid(blank_stimpres(i),2));
-				spike_indexes = point2samplelabel(t_spikes,TT{i}(2)-TT{i}(1), t(1));
+				spike_indexes = vlt.signal.point2samplelabel(t_spikes,TT{i}(2)-TT{i}(1), t(1));
 				spike_data{i}(spike_indexes) = 1;
 			end;
-			[gof(i),total_power(i),residual_power(i)] = gof_totalpower(raw_data{i}(:),VV{i}(:));
+			[gof(i),total_power(i),residual_power(i)] = vlt.stats.gof_totalpower(raw_data{i}(:),VV{i}(:));
 		end;
 
 		vmneuralresponseresiduals.element_epochid = et(n).epoch_id;
@@ -310,7 +310,7 @@ for n=1:N,
 		E.database_add(vmresp_resid_doc);
 
 		vmresp_binarydoc = E.database_openbinarydoc(vmresp_resid_doc);
-		vhsb_write(vmresp_binarydoc, cat(1,TT{:}), [cat(1,raw_data{:}) cat(1, VV{:}) cat(1, rawer_data{:}) cat(1,res{:}) cat(1,spike_data{:})],'use_filelock',0);
+		vlt.file.custom_file_formats.vhsb_write(vmresp_binarydoc, cat(1,TT{:}), [cat(1,raw_data{:}) cat(1, VV{:}) cat(1, rawer_data{:}) cat(1,res{:}) cat(1,spike_data{:})],'use_filelock',0);
 		vmresp_binarydoc = E.database_closebinarydoc(vmresp_binarydoc);
 
 	end; % if isdirection

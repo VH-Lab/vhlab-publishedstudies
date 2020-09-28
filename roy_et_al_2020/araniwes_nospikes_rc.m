@@ -51,11 +51,11 @@ tau1 = 0.5;
 chanlabel = 'spike2data_Ch21';
 plotit = 0;
 
-assign(varargin{:});
+vlt.data.assign(varargin{:});
 
 thresh_filename = 'araniwes_threshold.mat';
 output_filename = 'araniwes_output.mat';
-input_parameters = var2struct('thresh','tau0','tau1','newsi','amp');
+input_parameters = vlt.data.var2struct('thresh','tau0','tau1','newsi','amp');
 
 d = load([dirname filesep 'data.mat']);
 chdata = getfield(d,chanlabel); 
@@ -76,7 +76,7 @@ if isempty(thresh),
 	end;
 end;
 
-[vm,t,spiketimes] = vmnospikes(chdata.values/amp, chdata.interval,'Tstart',chdata.start,...
+[vm,t,spiketimes] = vlt.neuro.membrane.vmnospikes(chdata.values/amp, chdata.interval,'Tstart',chdata.start,...
 		'newsi',newsi,'thresh',thresh,'filter_algorithm','medfilt1');
 
 [ds_pathname,directoryname] = fileparts(dirname);
@@ -90,7 +90,7 @@ if plotit,
 	rc_plot(sp_rev_corr);
 end;
 
-out = var2struct('vm','t','spiketimes','vm_rev_corr','sp_rev_corr');
+out = vlt.data.var2struct('vm','t','spiketimes','vm_rev_corr','sp_rev_corr');
 
 save([dirname filesep output_filename],'out','-mat');
 

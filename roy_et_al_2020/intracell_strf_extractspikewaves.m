@@ -11,7 +11,7 @@ function intracell_strf_extractspikewaves(app, sharpprobe, varargin)
 
 displayresults = 1;
 
-assign(varargin{:});
+vlt.data.assign(varargin{:});
 
 et = epochtable(sharpprobe);
 N = numel(et);

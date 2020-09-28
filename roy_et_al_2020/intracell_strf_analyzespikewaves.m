@@ -12,12 +12,12 @@ function intracell_strf_analyzespikewaves(app, sharpprobe, varargin)
 displayresults = 1;
 debug_plot = 0;
 
-assign(varargin{:});
+vlt.data.assign(varargin{:});
 
 E = app.session;
 sapp = ndi_app_spikeextractor(E);
 element_vmcorrected = E.getelements('element.type','Vm_corrected','element.name',sharpprobe.elementstring());
-element_vmcorrected = celloritem(element_vmcorrected,1);
+element_vmcorrected = vlt.data.celloritem(element_vmcorrected,1);
 
 et = epochtable(element_vmcorrected);
 N = numel(et);
@@ -31,7 +31,7 @@ for n=1:N,
 	z = squeeze(w); %this is a squeezed matrix of columns, one column per spike wave
     
 	t = (wp.S0:wp.S1)/wp.samplerate;
-	spike_peak_index = findclosest(t,0);
+	spike_peak_index = vlt.data.findclosest(t,0);
     
 	indexes = 1+find(diff(st)>0.100); % look at spikes that have a preceeding inter-spike-interval of at least 100ms
 	gz = z(:,indexes); %new array of z values as columns only specificed by indexes (which is what we plot later) 
@@ -56,8 +56,8 @@ for n=1:N,
 	n_skwaves = [];
 	spike_summary_doc = [];
     
-	for c = 1:size(gz,2) %runs spikekink down every column in gz
-		[spikewave_Vtrim, spikewave_NZ_start, spikepeak_trim_loc, spikewave_NZ_end] = spikewavetrimmer(gz(:,c), spike_peak_index);
+	for c = 1:size(gz,2) %runs vlt.neuro.membrane.spikekink down every column in gz
+		[spikewave_Vtrim, spikewave_NZ_start, spikepeak_trim_loc, spikewave_NZ_end] = vlt.neuro.membrane.spikewavetrimmer(gz(:,c), spike_peak_index);
         
 		spike_trim_times(c,:) = [spikewave_NZ_start,spikepeak_trim_loc, spikewave_NZ_end];
 		t_trim = (spike_trim_times(c,1:3));
@@ -65,7 +65,7 @@ for n=1:N,
 
 		n_skwaves = 1:size(gz,2);
         
-		[kink_vm, max_dvdt, kink_index, slope_criterion] = spikekink(spikewave_Vtrim, ...
+		[kink_vm, max_dvdt, kink_index, slope_criterion] = vlt.neuro.membrane.spikekink(spikewave_Vtrim, ...
 			t(t_index), t_trim(2),'search_interval', t(t_trim(1)), 'slope_criterion', 0.033);
             
 		if isempty(kink_vm), %stops the code to debug if no kink_vm value is returned
@@ -73,7 +73,7 @@ for n=1:N,
 			keyboard;
 		end
         
-		[FWHM, hm_presk_loc, hm_postsk_loc, V_hm,presk_WHM, postsk_WHM] = spikeFWHM(spikewave_Vtrim,max(spikewave_Vtrim), ...
+		[FWHM, hm_presk_loc, hm_postsk_loc, V_hm,presk_WHM, postsk_WHM] = vlt.neuro.membrane.spikeFWHM(spikewave_Vtrim,max(spikewave_Vtrim), ...
 				spikepeak_trim_loc, kink_vm, kink_index, wp.samplerate, t(t_index));
         
 		if isempty(V_hm), %stops the code to debug if no V_hm value is returned

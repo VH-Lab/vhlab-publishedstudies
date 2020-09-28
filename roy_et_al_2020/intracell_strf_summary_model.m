@@ -10,7 +10,7 @@ function oriprops_struct = intracell_strf_summary_model(isstudy)
 %
 %
 
-oriprops_struct = emptystruct('actual','model', 'response_type', 'name','reference','young','out_pref','out_null','out_control');
+oriprops_struct = vlt.data.emptystruct('actual','model', 'response_type', 'name','reference','young','out_pref','out_null','out_control');
 
 response_types = {'mean','F1'};
 
@@ -67,9 +67,9 @@ for i=1:numel(isstudy),
 			[ds, ts, timeref_]=stimprobe.readtimeseries(timeref,interval(1,1),interval(1,2));
 			stim_onsetoffsetid = [ts.stimon ts.stimoff ds.stimid];
 
-			isblank = structfindfield(ds.parameters,'isblank',1);
+			isblank = vlt.data.structfindfield(ds.parameters,'isblank',1);
 			notblank = setdiff(1:numel(ds.parameters),isblank);
-			if eqlen(structwhatvaries(ds.parameters(notblank)),{'angle'})
+			if vlt.data.eqlen(vlt.data.structwhatvaries(ds.parameters(notblank)),{'angle'})
 				isdirectionepoch = 1;
 			end;
 
@@ -108,7 +108,7 @@ for i=1:numel(isstudy),
 				end;
 
 				q_e = ndi_query(isstudy(i).E.searchquery());
-				q_rdoc = ndi_query('','isa','stimulus_response_scalar.json','');
+				q_rdoc = ndi_query('','isa','vlt.neuro.stimulus.stimulus_response_scalar.json','');
 				q_epoch = ndi_query('stimulus_response.element_epochid','exact_string', et(e).epoch_id, '');
 					% here we make the assumption of common epochid names
 				
@@ -121,7 +121,7 @@ for i=1:numel(isstudy),
 				oridoc_resp_actual = {};
 
 				for r=1:numel(response_types),
-					q_resptype = ndi_query('stimulus_response_scalar.response_type','exact_string',response_types{r},'');
+					q_resptype = ndi_query('vlt.neuro.stimulus.stimulus_response_scalar.response_type','exact_string',response_types{r},'');
 
 					rdoc_actual = isstudy(i).E.database_search(q_e&q_relement_actual&q_rdoc&q_resptype&q_epoch);
 					q_tunedocactual = ndi_query('','depends_on','stimulus_response_scalar_id',rdoc_actual{1}.id());

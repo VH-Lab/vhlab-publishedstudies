@@ -10,7 +10,7 @@ function curvestruct = intracell_strf_summary_vfr(isstudy)
 %
 %
 
-curvestruct = emptystruct('voltage_observations','firingrate_observations','Xn','Yn','Yint','Nn',...
+curvestruct = vlt.data.emptystruct('voltage_observations','firingrate_observations','Xn','Yn','Yint','Nn',...
 	'name','reference','young','fit');
 
 q_bindoc = ndi_query('','isa','binnedspikeratevm.json','');
@@ -47,9 +47,9 @@ for i=1:numel(isstudy),
 			[ds, ts, timeref_]=stimprobe.readtimeseries(timeref,interval(1,1),interval(1,2));
 			stim_onsetoffsetid = [ts.stimon ts.stimoff ds.stimid];
 
-			isblank = structfindfield(ds.parameters,'isblank',1);
+			isblank = vlt.data.structfindfield(ds.parameters,'isblank',1);
 			notblank = setdiff(1:numel(ds.parameters),isblank);
-			if eqlen(structwhatvaries(ds.parameters(notblank)),{'angle'})
+			if vlt.data.eqlen(vlt.data.structwhatvaries(ds.parameters(notblank)),{'angle'})
 				isdirectionepoch = 1;
 			end;
 
@@ -66,12 +66,12 @@ for i=1:numel(isstudy),
 					Yint = [];
 					Nn = [];
 
-					struct2var(mydoc.document_properties.binnedspikeratevm);
+					vlt.data.struct2var(mydoc.document_properties.binnedspikeratevm);
 
 					if ~isempty(firingrate_observations),
-						[Yn,Xn,Yint] = slidingwindowfunc(voltage_observations,  firingrate_observations,  ...
+						[Yn,Xn,Yint] = vlt.math.slidingwindowfunc(voltage_observations,  firingrate_observations,  ...
 								min(voltage_observations), 0.001, max(voltage_observations), 0.002, 'mean',0);
-						[Nn] = slidingwindowfunc(voltage_observations, firingrate_observations, ...
+						[Nn] = vlt.math.slidingwindowfunc(voltage_observations, firingrate_observations, ...
 								min(voltage_observations), 0.001, max(voltage_observations), 0.002, 'numel',0);
 					end;
 
@@ -83,16 +83,16 @@ for i=1:numel(isstudy),
 						'young', isstudy(i).young,'fit',[]);
 
 					% fits 
-					fits = emptystruct('voltages','fr','fitdoc','fittype');
+					fits = vlt.data.emptystruct('voltages','fr','fitdoc','fittype');
 
-					fittypes = {'linethreshold','linepowerthreshold','tanhfitoffset','linepowerthreshold_0'};
+					fittypes = {'linethreshold','vlt.fit.linepowerthreshold','vlt.fit.tanhfitoffset','linepowerthreshold_0'};
 					voltages = -0.100:0.001:0.050;
 					for f=1:numel(fittypes),
 						fitdoc = sharpprobes{p}.session.database_search(ndi_query('','isa','fitcurve.json','') & ...
 							ndi_query('fitcurve.fit_name','exact_string',fittypes{f},'') & ...
 							q_epoch & q_elementid);
 						if ~isempty(fitdoc),
-							fitdoc = celloritem(fitdoc,1);
+							fitdoc = vlt.data.celloritem(fitdoc,1);
 							fr = ndi_evaluate_fitcurve(fitdoc,voltages);
 							fits(end+1) = struct('voltages',voltages,'fr',fr,'fitdoc',fitdoc,'fittype',fittypes{f});
 						end;

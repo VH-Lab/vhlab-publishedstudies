@@ -13,7 +13,7 @@ binwidth = 0.030;
 
 displayresults = 1;
 
-assign(varargin{:});
+vlt.data.assign(varargin{:});
 
 E = app.session;
 
@@ -56,9 +56,9 @@ for n=1:N,
 	[ds, ts, timeref_]=stimprobe.readtimeseries(timeref,interval(1,1),interval(1,2));
 	stim_onsetoffsetid = [ts.stimon ts.stimoff ds.stimid];
 	    
-	isblank = structfindfield(ds.parameters,'isblank',1);
+	isblank = vlt.data.structfindfield(ds.parameters,'isblank',1);
 	notblank = setdiff(1:numel(ds.parameters),isblank);
-	if eqlen(structwhatvaries(ds.parameters(notblank)),{'angle'})
+	if vlt.data.eqlen(vlt.data.structwhatvaries(ds.parameters(notblank)),{'angle'})
 		isdirectionepoch = 1;
 	end;
 	    
@@ -66,7 +66,7 @@ for n=1:N,
 
 		tF = ds.parameters{1}.tFrequency;
 		linepowerthresh_doc = E.database_search(ndi_query('','isa','fitcurve.json','') & ...
-			ndi_query('fitcurve.fit_name','exact_string','linepowerthreshold','') & ...
+			ndi_query('fitcurve.fit_name','exact_string','vlt.fit.linepowerthreshold','') & ...
 			ndi_query('','depends_on','element_id',sharpprobe.id()) & ...
 			ndi_query('epochid','exact_string',et(n).epoch_id,''));
 
@@ -93,8 +93,8 @@ for n=1:N,
 		smoothed_vm_sim = zeros(size(smoothed_vm));
 
 		for i=1:size(stim_onsetoffsetid,1), % mimic each stim by F0 and F1
-			t_start_sample = findclosest(smoothed_t,stim_onsetoffsetid(i,1));
-			t_stop_sample =  findclosest(smoothed_t,stim_onsetoffsetid(i,2));
+			t_start_sample = vlt.data.findclosest(smoothed_t,stim_onsetoffsetid(i,1));
+			t_stop_sample =  vlt.data.findclosest(smoothed_t,stim_onsetoffsetid(i,2));
 			t_values = 0:binwidth:binwidth*(t_stop_sample-t_start_sample+1-1);
 			stim_id_here = stim_onsetoffsetid(i,3);
 			stim_id_lookup = find(vm_resp_doc{1}{1}.document_properties.tuning_curve.stimid==stim_id_here);

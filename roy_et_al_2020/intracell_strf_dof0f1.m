@@ -11,7 +11,7 @@ function [fr, v, timepoints] = intracell_strf_dof0f1(app, stimprobe, ndi_element
 
 displayresults = 1;
 
-assign(varargin{:});
+vlt.data.assign(varargin{:});
 
 E = app.session; 
 rapp = ndi_app_tuning_response(E);
@@ -19,7 +19,7 @@ oapp = ndi_app_oridirtuning(E);
 
 q_oridocs = ndi_query('orientation_direction_tuning','hasfield','','');
 
-q_rdoc = ndi_query('','isa','stimulus_response_scalar.json','');
+q_rdoc = ndi_query('','isa','vlt.neuro.stimulus.stimulus_response_scalar.json','');
 q_e = ndi_query(E.searchquery());
 q_relement = ndi_query('','depends_on','element_id',ndi_element_obj.id());
 rdoc = E.database_search(q_rdoc&q_e&q_relement);

@@ -8,7 +8,7 @@ old_data = load('experienced_data','-mat');
 
 old_data.summary_curves = old_data.summary_curves(ia);
 
-incl_fr = find(strcmp('linepowerthreshold',{old_data.fit_curves_global.fittype}));
+incl_fr = find(strcmp('vlt.fit.linepowerthreshold',{old_data.fit_curves_global.fittype}));
 old_data.fit_curves_global = old_data.fit_curves_global(incl_fr);
 allnames = {old_data.fit_curves_global.name};
 incl_names = [];
@@ -27,7 +27,7 @@ young_data = load('young_data','-mat');
 
 young_data.summary_curves = young_data.summary_curves(ia);
 
-incl_fr = find(strcmp('linepowerthreshold',{young_data.fit_curves_global.fittype}));
+incl_fr = find(strcmp('vlt.fit.linepowerthreshold',{young_data.fit_curves_global.fittype}));
 young_data.fit_curves_global = young_data.fit_curves_global(incl_fr);
 allnames = {young_data.fit_curves_global.name};
 incl_names = [];
@@ -122,26 +122,26 @@ threshold = 2;
 offset = 3;
 exponent = 4;
 
-d_25y =   (p_y(:,exponent) .* p_y(:,slope)) .* rectify(0.025 - p_y(:,threshold)) .^ (p_y(:,exponent)-1);
-fr_25y =  (p_y(:,slope)) .* rectify(0.025 - p_y(:,threshold)) .^ (p_y(:,exponent));
+d_25y =   (p_y(:,exponent) .* p_y(:,slope)) .* vlt.math.rectify(0.025 - p_y(:,threshold)) .^ (p_y(:,exponent)-1);
+fr_25y =  (p_y(:,slope)) .* vlt.math.rectify(0.025 - p_y(:,threshold)) .^ (p_y(:,exponent));
 
-d_25o =   (p_o(:,exponent) .* p_o(:,slope)) .* rectify(0.025 - p_o(:,threshold)) .^ (p_o(:,exponent)-1);
-fr_25o =  (p_o(:,slope)) .* rectify(0.025 - p_o(:,threshold)) .^ p_o(:,exponent);
+d_25o =   (p_o(:,exponent) .* p_o(:,slope)) .* vlt.math.rectify(0.025 - p_o(:,threshold)) .^ (p_o(:,exponent)-1);
+fr_25o =  (p_o(:,slope)) .* vlt.math.rectify(0.025 - p_o(:,threshold)) .^ p_o(:,exponent);
 
 v = 0:0.001:0.050;
 vplot = -0.10:0.001:0.050;
 
-v_fr_y = (p_y(:,slope)) .* rectify(v - p_y(:,threshold)) .^ (p_y(:,exponent));
-v_fr_o = (p_o(:,slope)) .* rectify(v - p_o(:,threshold)) .^ (p_o(:,exponent));
+v_fr_y = (p_y(:,slope)) .* vlt.math.rectify(v - p_y(:,threshold)) .^ (p_y(:,exponent));
+v_fr_o = (p_o(:,slope)) .* vlt.math.rectify(v - p_o(:,threshold)) .^ (p_o(:,exponent));
 
-v_fre_y = 0*(p_y(:,slope)) .* rectify(v - p_y(:,threshold)) .^ (p_y(:,exponent));  % make the vector for the interpolated empirical observations
-v_fre_o = 0*(p_o(:,slope)) .* rectify(v - p_o(:,threshold)) .^ (p_o(:,exponent));  % make the vector for the interpolated empirical observations
+v_fre_y = 0*(p_y(:,slope)) .* vlt.math.rectify(v - p_y(:,threshold)) .^ (p_y(:,exponent));  % make the vector for the interpolated empirical observations
+v_fre_o = 0*(p_o(:,slope)) .* vlt.math.rectify(v - p_o(:,threshold)) .^ (p_o(:,exponent));  % make the vector for the interpolated empirical observations
 
-N_fre_y = 0*(p_y(:,slope)) .* rectify(vplot - p_y(:,threshold)) .^ (p_y(:,exponent));  % make the vector for the measurement counting
-N_fre_o = 0*(p_o(:,slope)) .* rectify(vplot - p_o(:,threshold)) .^ (p_o(:,exponent));  % make the vector for the measurement counting
+N_fre_y = 0*(p_y(:,slope)) .* vlt.math.rectify(vplot - p_y(:,threshold)) .^ (p_y(:,exponent));  % make the vector for the measurement counting
+N_fre_o = 0*(p_o(:,slope)) .* vlt.math.rectify(vplot - p_o(:,threshold)) .^ (p_o(:,exponent));  % make the vector for the measurement counting
 
-d_y =   (p_y(:,exponent) .* p_y(:,slope)) .* rectify(v - p_y(:,threshold)) .^ (p_y(:,exponent)-1);
-d_o =   (p_o(:,exponent) .* p_o(:,slope)) .* rectify(v - p_o(:,threshold)) .^ (p_o(:,exponent)-1);
+d_y =   (p_y(:,exponent) .* p_y(:,slope)) .* vlt.math.rectify(v - p_y(:,threshold)) .^ (p_y(:,exponent)-1);
+d_o =   (p_o(:,exponent) .* p_o(:,slope)) .* vlt.math.rectify(v - p_o(:,threshold)) .^ (p_o(:,exponent)-1);
 
 
 for i=1:numel(old_data.summary_curves),
@@ -171,7 +171,7 @@ for i=1:numel(old_data.summary_curves),
 	plot(old_data.summary_curves(i).Xn,old_data.summary_curves(i).Yn,'color',0.7*[1 0 1]);
 	v_fre_o(i,:) = interp1(old_data.summary_curves(i).Xn(~isnan(old_data.summary_curves(i).Yn)), ...
 			old_data.summary_curves(i).Yn(~isnan(old_data.summary_curves(i).Yn)),v,'linear',NaN);
-	N_fre_o(i,:) = slidingwindowfunc(old_data.summary_curves(i).voltage_observations,old_data.summary_curves(i).voltage_observations,vplot(1)-0.001, diff(vplot(1:2)), vplot(end)+0.001, 0.001, 'numel', 1); 
+	N_fre_o(i,:) = vlt.math.slidingwindowfunc(old_data.summary_curves(i).voltage_observations,old_data.summary_curves(i).voltage_observations,vplot(1)-0.001, diff(vplot(1:2)), vplot(end)+0.001, 0.001, 'numel', 1); 
 	box off;
 	axis([-0.010 0.050 0 150]);
 	xlabel('Voltage');
@@ -201,7 +201,7 @@ for i=1:numel(young_data.summary_curves),
 	plot(young_data.summary_curves(i).Xn,young_data.summary_curves(i).Yn,'color',0.7*[0 1 0]);
 	v_fre_y(i,:) = interp1(young_data.summary_curves(i).Xn(~isnan(young_data.summary_curves(i).Yn)),...
 			young_data.summary_curves(i).Yn(~isnan(young_data.summary_curves(i).Yn)),v,'linear',NaN);
-	N_fre_y(i,:) = slidingwindowfunc(young_data.summary_curves(i).voltage_observations,young_data.summary_curves(i).voltage_observations,vplot(1)-0.001, diff(vplot(1:2)), vplot(end)+0.001, 0.001, 'numel', 1); 
+	N_fre_y(i,:) = vlt.math.slidingwindowfunc(young_data.summary_curves(i).voltage_observations,young_data.summary_curves(i).voltage_observations,vplot(1)-0.001, diff(vplot(1:2)), vplot(end)+0.001, 0.001, 'numel', 1); 
 	box off;
 	subplot(3,2,2);
 	hold on;
@@ -215,10 +215,10 @@ end;
 
 subplot(3,2,4);
 
-h=myerrorbar(v,nanmean(v_fre_y,1),nanstderr(v_fre_y),nanstderr(v_fre_y));
+h=vlt.plot.myerrorbar(v,nanmean(v_fre_y,1),vlt.data.nanstderr(v_fre_y),vlt.data.nanstderr(v_fre_y));
 set(h,'color',[0 1 0],'linewidth',1);
 hold on
-h2=myerrorbar(v,nanmean(v_fre_o,1),nanstderr(v_fre_o),nanstderr(v_fre_o));
+h2=vlt.plot.myerrorbar(v,nanmean(v_fre_o,1),vlt.data.nanstderr(v_fre_o),vlt.data.nanstderr(v_fre_o));
 set(h2,'color',[1 0 1],'linewidth',1);
 
 axis([-0.010 0.050 0 100]);
@@ -233,10 +233,10 @@ subplot(3,2,i);
 
 set(gca,'yscale','log');
 
-h =  errorbar(vplot,nanmean(N_fre_y,1),0*nanstderr(N_fre_y),nanstderr(N_fre_y));
+h =  errorbar(vplot,nanmean(N_fre_y,1),0*vlt.data.nanstderr(N_fre_y),vlt.data.nanstderr(N_fre_y));
 set(h,'color',[0 1 0],'linewidth',1);
 hold on
-h2 = errorbar(vplot,nanmean(N_fre_o,1),0*nanstderr(N_fre_o),nanstderr(N_fre_o));
+h2 = errorbar(vplot,nanmean(N_fre_o,1),0*vlt.data.nanstderr(N_fre_o),vlt.data.nanstderr(N_fre_o));
 set(h2,'color',[1 0 1],'linewidth',1);
 
 xlabel('Voltage');
@@ -258,19 +258,19 @@ figure('tag',['Fitaverages_simplecomplex_flag' int2str(simplecomplexonly) ]);
 
 subplot(2,2,1);
 
-h=myerrorbar(v,nanmean(v_fr_y,1),nanstderr(v_fr_y),nanstderr(v_fr_y));
+h=vlt.plot.myerrorbar(v,nanmean(v_fr_y,1),vlt.data.nanstderr(v_fr_y),vlt.data.nanstderr(v_fr_y));
 set(h,'color',[0 1 0],'linewidth',1);
 hold on
-h2=myerrorbar(v,nanmean(v_fr_o,1),nanstderr(v_fr_o),nanstderr(v_fr_o));
+h2=vlt.plot.myerrorbar(v,nanmean(v_fr_o,1),vlt.data.nanstderr(v_fr_o),vlt.data.nanstderr(v_fr_o));
 set(h2,'color',[1 0 1],'linewidth',1);
 title(['Average of the fits']);
 
 subplot(2,2,2);
 
-h=myerrorbar(v,nanmean(d_y,1),nanstderr(d_y),nanstderr(d_y));
+h=vlt.plot.myerrorbar(v,nanmean(d_y,1),vlt.data.nanstderr(d_y),vlt.data.nanstderr(d_y));
 set(h,'color',[0 1 0],'linewidth',1);
 hold on
-h2=myerrorbar(v,nanmean(d_o,1),nanstderr(d_o),nanstderr(d_o));
+h2=vlt.plot.myerrorbar(v,nanmean(d_o,1),vlt.data.nanstderr(d_o),vlt.data.nanstderr(d_o));
 set(h2,'color',[1 0 1],'linewidth',1);
 title(['Average of the fits']);
 

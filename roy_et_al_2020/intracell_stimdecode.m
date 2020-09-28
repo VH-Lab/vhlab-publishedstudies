@@ -11,7 +11,7 @@ function [fr, v, timepoints] = intracell_stimdecode(app, stimprobe, varargin)
 
 displayresults = 1;
 
-assign(varargin{:});
+vlt.data.assign(varargin{:});
 
 E = app.session; 
 
