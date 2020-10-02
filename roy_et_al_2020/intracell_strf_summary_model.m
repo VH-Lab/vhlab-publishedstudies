@@ -60,7 +60,7 @@ for i=1:numel(isstudy),
 
 			[data,t_raw,timeref] = readtimeseries(myelements_spikes{p}, et(e).epoch_id, 0, 1);
 
-			gapp = ndi_app_markgarbage(isstudy(i).E);
+			gapp = ndi.app.markgarbage(isstudy(i).E);
 			vi = gapp.loadvalidinterval(myelements_spikes{p});
 			interval = gapp.identifyvalidintervals(myelements_spikes{p},timeref,0,Inf);
 
@@ -76,9 +76,9 @@ for i=1:numel(isstudy),
 			if isdirectionepoch,
 
 						% ASSUMPTION: epoch_ids are the same, not true in general
-				vmresp_resid_doc = isstudy(i).E.database_search( ndi_query('','depends_on','element_id',element_vmcorrected_match.id()) & ...
-					ndi_query('','isa','vmneuralresponseresiduals.json','') & ndi_query('ndi_document.name','exact_string','Preferred response','') & ...
-					ndi_query('vmneuralresponseresiduals.element_epochid','exact_string',et(e).epoch_id,''));
+				vmresp_resid_doc = isstudy(i).E.database_search( ndi.query('','depends_on','element_id',element_vmcorrected_match.id()) & ...
+					ndi.query('','isa','vmneuralresponseresiduals.json','') & ndi.query('ndi_document.name','exact_string','Preferred response','') & ...
+					ndi.query('vmneuralresponseresiduals.element_epochid','exact_string',et(e).epoch_id,''));
 
 				if ~isempty(vmresp_resid_doc),
 					out_pref = intracell_strf_residual2waves(isstudy(i).E, vmresp_resid_doc);
@@ -86,9 +86,9 @@ for i=1:numel(isstudy),
 					error(['could not find vmresp_resid_doc']);
 				end;
 						% ASSUMPTION: epoch_ids are the same, not true in general
-				vmresp_resid_doc = isstudy(i).E.database_search( ndi_query('','depends_on','element_id',element_vmcorrected_match.id()) & ...
-					ndi_query('','isa','vmneuralresponseresiduals.json','') & ndi_query('ndi_document.name','exact_string','Nonpreferred response','') & ...
-					ndi_query('vmneuralresponseresiduals.element_epochid','exact_string',et(e).epoch_id,''));
+				vmresp_resid_doc = isstudy(i).E.database_search( ndi.query('','depends_on','element_id',element_vmcorrected_match.id()) & ...
+					ndi.query('','isa','vmneuralresponseresiduals.json','') & ndi.query('ndi_document.name','exact_string','Nonpreferred response','') & ...
+					ndi.query('vmneuralresponseresiduals.element_epochid','exact_string',et(e).epoch_id,''));
 
 				if ~isempty(vmresp_resid_doc),
 					out_null = intracell_strf_residual2waves(isstudy(i).E, vmresp_resid_doc);
@@ -97,9 +97,9 @@ for i=1:numel(isstudy),
 				end;
 
 						% ASSUMPTION: epoch_ids are the same, not true in general
-				vmresp_resid_doc = isstudy(i).E.database_search( ndi_query('','depends_on','element_id',element_vmcorrected_match.id()) & ...
-					ndi_query('','isa','vmneuralresponseresiduals.json','') & ndi_query('ndi_document.name','exact_string','Control response','') & ...
-					ndi_query('vmneuralresponseresiduals.element_epochid','exact_string',et(e).epoch_id,''));
+				vmresp_resid_doc = isstudy(i).E.database_search( ndi.query('','depends_on','element_id',element_vmcorrected_match.id()) & ...
+					ndi.query('','isa','vmneuralresponseresiduals.json','') & ndi.query('ndi_document.name','exact_string','Control response','') & ...
+					ndi.query('vmneuralresponseresiduals.element_epochid','exact_string',et(e).epoch_id,''));
 
 				if ~isempty(vmresp_resid_doc),
 					out_control = intracell_strf_residual2waves(isstudy(i).E, vmresp_resid_doc);
@@ -107,37 +107,37 @@ for i=1:numel(isstudy),
 					error(['could not find vmresp_resid_doc']);
 				end;
 
-				q_e = ndi_query(isstudy(i).E.searchquery());
-				q_rdoc = ndi_query('','isa','vlt.neuro.stimulus.stimulus_response_scalar.json','');
-				q_epoch = ndi_query('stimulus_response.element_epochid','exact_string', et(e).epoch_id, '');
+				q_e = ndi.query(isstudy(i).E.searchquery());
+				q_rdoc = ndi.query('','isa','vlt.neuro.stimulus.stimulus_response_scalar.json','');
+				q_epoch = ndi.query('stimulus_response.element_epochid','exact_string', et(e).epoch_id, '');
 					% here we make the assumption of common epochid names
 				
-				q_relement_actual = ndi_query('','depends_on','element_id',myelements_spikes{p}.id());
-				q_relement_model = ndi_query('','depends_on','element_id',element_vmsmooth_match.id());
-				q_tc = ndi_query('','isa','stimulus_tuningcurve.json',''); 
-				q_oridocs = ndi_query('orientation_direction_tuning','hasfield','','');
+				q_relement_actual = ndi.query('','depends_on','element_id',myelements_spikes{p}.id());
+				q_relement_model = ndi.query('','depends_on','element_id',element_vmsmooth_match.id());
+				q_tc = ndi.query('','isa','stimulus_tuningcurve.json',''); 
+				q_oridocs = ndi.query('orientation_direction_tuning','hasfield','','');
 				
 				tdoc_resp_actual = {};
 				oridoc_resp_actual = {};
 
 				for r=1:numel(response_types),
-					q_resptype = ndi_query('vlt.neuro.stimulus.stimulus_response_scalar.response_type','exact_string',response_types{r},'');
+					q_resptype = ndi.query('vlt.neuro.stimulus.stimulus_response_scalar.response_type','exact_string',response_types{r},'');
 
 					rdoc_actual = isstudy(i).E.database_search(q_e&q_relement_actual&q_rdoc&q_resptype&q_epoch);
-					q_tunedocactual = ndi_query('','depends_on','stimulus_response_scalar_id',rdoc_actual{1}.id());
+					q_tunedocactual = ndi.query('','depends_on','stimulus_response_scalar_id',rdoc_actual{1}.id());
 					tdoc_actual = isstudy(i).E.database_search(q_relement_actual&q_tunedocactual&q_tc);
-					q_rdocspecific = ndi_query('','depends_on','stimulus_tuningcurve_id',tdoc_actual{1}.id());
+					q_rdocspecific = ndi.query('','depends_on','stimulus_tuningcurve_id',tdoc_actual{1}.id());
 					oridocs_actual = isstudy(i).E.database_search(q_relement_actual&q_oridocs&q_rdocspecific);
 
 						% ASSUMPTION: epoch_ids are the same, not true in general
 					rdoc_model = isstudy(i).E.database_search(q_e&q_relement_model&q_rdoc&q_resptype&q_epoch);
                     try, 
-					q_tunedocmodel = ndi_query('','depends_on','stimulus_response_scalar_id',rdoc_model{1}.id());
+					q_tunedocmodel = ndi.query('','depends_on','stimulus_response_scalar_id',rdoc_model{1}.id());
                     catch,
                         keyboard;
                     end;
 					tdoc_model = isstudy(i).E.database_search(q_relement_model&q_tunedocmodel&q_tc);
-					q_rdocspecific = ndi_query('','depends_on','stimulus_tuningcurve_id',tdoc_model{1}.id());
+					q_rdocspecific = ndi.query('','depends_on','stimulus_tuningcurve_id',tdoc_model{1}.id());
 					oridocs_model = isstudy(i).E.database_search(q_relement_model&q_oridocs&q_rdocspecific);
 
 					% store

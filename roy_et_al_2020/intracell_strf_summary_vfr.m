@@ -13,7 +13,7 @@ function curvestruct = intracell_strf_summary_vfr(isstudy)
 curvestruct = vlt.data.emptystruct('voltage_observations','firingrate_observations','Xn','Yn','Yint','Nn',...
 	'name','reference','young','fit');
 
-q_bindoc = ndi_query('','isa','binnedspikeratevm.json','');
+q_bindoc = ndi.query('','isa','binnedspikeratevm.json','');
 
 for i=1:numel(isstudy),
 
@@ -32,7 +32,7 @@ for i=1:numel(isstudy),
 
 		et = sharpprobes{p}.epochtable();
 
-		q_elementid = ndi_query('','depends_on','element_id',sharpprobes{p}.id());
+		q_elementid = ndi.query('','depends_on','element_id',sharpprobes{p}.id());
 
 		for e=1:numel(et),
 
@@ -40,7 +40,7 @@ for i=1:numel(isstudy),
 
 			[data,t_raw,timeref] = readtimeseries(sharpprobes{p}, et(e).epoch_id, 0, 1);
 
-			gapp = ndi_app_markgarbage(isstudy(i).E);
+			gapp = ndi.app.markgarbage(isstudy(i).E);
 			vi = gapp.loadvalidinterval(sharpprobes{p});
 			interval = gapp.identifyvalidintervals(sharpprobes{p},timeref,0,Inf);
 
@@ -54,7 +54,7 @@ for i=1:numel(isstudy),
 			end;
 
 			if isdirectionepoch,
-				q_epoch = ndi_query('epochid','exact_string',et(e).epoch_id,'');
+				q_epoch = ndi.query('epochid','exact_string',et(e).epoch_id,'');
 
 				mydoc = isstudy(i).E.database_search(q_epoch & q_elementid & q_bindoc);
 
@@ -88,12 +88,12 @@ for i=1:numel(isstudy),
 					fittypes = {'linethreshold','vlt.fit.linepowerthreshold','vlt.fit.tanhfitoffset','linepowerthreshold_0'};
 					voltages = -0.100:0.001:0.050;
 					for f=1:numel(fittypes),
-						fitdoc = sharpprobes{p}.session.database_search(ndi_query('','isa','fitcurve.json','') & ...
-							ndi_query('fitcurve.fit_name','exact_string',fittypes{f},'') & ...
+						fitdoc = sharpprobes{p}.session.database_search(ndi.query('','isa','fitcurve.json','') & ...
+							ndi.query('fitcurve.fit_name','exact_string',fittypes{f},'') & ...
 							q_epoch & q_elementid);
 						if ~isempty(fitdoc),
 							fitdoc = vlt.data.celloritem(fitdoc,1);
-							fr = ndi_evaluate_fitcurve(fitdoc,voltages);
+							fr = ndi.data.evaluate_fitcurve(fitdoc,voltages);
 							fits(end+1) = struct('voltages',voltages,'fr',fr,'fitdoc',fitdoc,'fittype',fittypes{f});
 						end;
 					end;

@@ -20,7 +20,7 @@ voltage_observations = [];
 timepoints = [];
 
 E = app.session;
-iapp = ndi_app(E,'vhlab_voltage2firingrate');
+iapp = ndi.app(E,'vhlab_voltage2firingrate');
 
 if isempty(epochid),
 	et = epochtable(sharpprobe);
@@ -32,8 +32,8 @@ if isempty(epochid),
 	return;
 end;
 
-mydoc =E.database_search(ndi_query('','isa','binnedspikeratevm.json','') & ...
-	ndi_query('epochid','exact_string',epochid,'') & ndi_query('','depends_on','element_id',sharpprobe.id()));
+mydoc =E.database_search(ndi.query('','isa','binnedspikeratevm.json','') & ...
+	ndi.query('epochid','exact_string',epochid,'') & ndi.query('','depends_on','element_id',sharpprobe.id()));
 
 if numel(mydoc)>1, error(['More than a single match.']); end; 
 

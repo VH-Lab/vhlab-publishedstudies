@@ -15,7 +15,7 @@ debug_plot = 0;
 vlt.data.assign(varargin{:});
 
 E = app.session;
-sapp = ndi_app_spikeextractor(E);
+sapp = ndi.app.spikeextractor(E);
 element_vmcorrected = E.getelements('element.type','Vm_corrected','element.name',sharpprobe.elementstring());
 element_vmcorrected = vlt.data.celloritem(element_vmcorrected,1);
 
@@ -42,10 +42,10 @@ for n=1:N,
 	element_doc = ndi_element_obj.load_element_doc();
 
 	if ~isempty(element_doc), % search for an existing document; if it exists, remove it so we can replace it with our new one
-		q_spikestats = ndi_query('','isa','vmspikesummary.json','');
-		q_element = ndi_query('','depends_on','element_id',element_doc.id());
-		q_spikewave = ndi_query('','depends_on','spike_extraction_id',spikewaves_doc.id());
-		q_epoch = ndi_query('epochid','exact_string',et(n).epoch_id,'');
+		q_spikestats = ndi.query('','isa','vmspikesummary.json','');
+		q_element = ndi.query('','depends_on','element_id',element_doc.id());
+		q_spikewave = ndi.query('','depends_on','spike_extraction_id',spikewaves_doc.id());
+		q_epoch = ndi.query('epochid','exact_string',et(n).epoch_id,'');
 		sq = (q_spikestats & q_element & q_epoch);
 		docs = E.database_search(sq);
 		E.database_rm(docs);
@@ -202,8 +202,8 @@ for n=1:N,
 	end;
 	spike_stats.slope_criterion = slope_criterion;
 
-	%create a summary ndi_document for each epoch
-	spike_summary_doc = ndi_document('apps/vhlab_voltage2firingrate/vmspikesummary.json',...
+	%create a summary ndi.document for each epoch
+	spike_summary_doc = ndi.document('apps/vhlab_voltage2firingrate/vmspikesummary.json',...
 		'vmspikesummary', spike_stats,'epochid',et(n).epoch_id) + E.newdocument();
 	spike_summary_doc = spike_summary_doc.set_dependency_value('element_id',element_vmcorrected.id());
 	spike_summary_doc = spike_summary_doc.set_dependency_value('spike_extraction_id',spikewaves_doc.id());

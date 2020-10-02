@@ -11,17 +11,17 @@ function [fr, v, timepoints] = intracell_strf_fitspikeratevm(app, sharpprobe, st
 vlt.data.assign(varargin{:});
 
  % document search queries
-q_spikeratevmdoc = ndi_query('','isa','binnedspikeratevm.json','');  % old, legacy
-q_elementid = ndi_query('','depends_on','element_id',sharpprobe.id());
-q_fitcurvedoc = ndi_query('','isa','fitcurve.json','');
-q_lt = ndi_query('fitcurve.fit_name','exact_string','linethreshold','');
-q_lpt = ndi_query('fitcurve.fit_name','exact_string','vlt.fit.linepowerthreshold','');
-q_lpt0 = ndi_query('fitcurve.fit_name','exact_string','linepowerthreshold_0','');
-q_tanh = ndi_query('fitcurve.fit_name','exact_string','vlt.fit.tanhfitoffset','');
+q_spikeratevmdoc = ndi.query('','isa','binnedspikeratevm.json','');  % old, legacy
+q_elementid = ndi.query('','depends_on','element_id',sharpprobe.id());
+q_fitcurvedoc = ndi.query('','isa','fitcurve.json','');
+q_lt = ndi.query('fitcurve.fit_name','exact_string','linethreshold','');
+q_lpt = ndi.query('fitcurve.fit_name','exact_string','vlt.fit.linepowerthreshold','');
+q_lpt0 = ndi.query('fitcurve.fit_name','exact_string','linepowerthreshold_0','');
+q_tanh = ndi.query('fitcurve.fit_name','exact_string','vlt.fit.tanhfitoffset','');
 
 E = app.session;
 
-iapp = ndi_app(E,'vhlab_voltage2firingrate');
+iapp = ndi.app(E,'vhlab_voltage2firingrate');
 
 et = epochtable(sharpprobe);
 N = numel(et);
@@ -29,7 +29,7 @@ N = numel(et);
 for n=1:N,
 	varsbeginning = fieldnames(vlt.data.workspace2struct);
 
-	q_epochid = ndi_query('epochid','exact_string',et(n).epoch_id,'');
+	q_epochid = ndi.query('epochid','exact_string',et(n).epoch_id,'');
 	spikeratevmdoc = E.database_search(q_spikeratevmdoc&q_epochid&q_elementid);
 
 	if ~isempty(spikeratevmdoc),

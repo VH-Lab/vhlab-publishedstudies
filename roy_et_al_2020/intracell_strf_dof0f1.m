@@ -14,16 +14,16 @@ displayresults = 1;
 vlt.data.assign(varargin{:});
 
 E = app.session; 
-rapp = ndi_app_tuning_response(E);
-oapp = ndi_app_oridirtuning(E);
+rapp = ndi.app.stimulus.tuning_response(E);
+oapp = ndi.app.oridirtuning(E);
 
-q_oridocs = ndi_query('orientation_direction_tuning','hasfield','','');
+q_oridocs = ndi.query('orientation_direction_tuning','hasfield','','');
 
-q_rdoc = ndi_query('','isa','vlt.neuro.stimulus.stimulus_response_scalar.json','');
-q_e = ndi_query(E.searchquery());
-q_relement = ndi_query('','depends_on','element_id',ndi_element_obj.id());
+q_rdoc = ndi.query('','isa','vlt.neuro.stimulus.stimulus_response_scalar.json','');
+q_e = ndi.query(E.searchquery());
+q_relement = ndi.query('','depends_on','element_id',ndi_element_obj.id());
 rdoc = E.database_search(q_rdoc&q_e&q_relement);
-q_tc = ndi_query('','isa','stimulus_tuningcurve.json',''); % too broad, will kill any tuning curve
+q_tc = ndi.query('','isa','stimulus_tuningcurve.json',''); % too broad, will kill any tuning curve
 
 tdoc = E.database_search(q_relement&q_tc);
 oridocs = E.database_search(q_relement&q_oridocs);

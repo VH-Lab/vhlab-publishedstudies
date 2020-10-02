@@ -33,7 +33,7 @@ for i=1:numel(isstudy),
 
 			[data,t_raw,timeref] = readtimeseries(myelements_vmcorrected{p}, et(e).epoch_id, 0, 1);
 
-			gapp = ndi_app_markgarbage(isstudy(i).E);
+			gapp = ndi.app.markgarbage(isstudy(i).E);
 			vi = gapp.loadvalidinterval(myelements_vmcorrected{p});
 			interval = gapp.identifyvalidintervals(myelements_vmcorrected{p},timeref,0,Inf);
 
@@ -50,9 +50,9 @@ for i=1:numel(isstudy),
 
 						% ASSUMPTION: a single direction epoch per cell; we know this is true for this study
 
-				q_spikestats = ndi_query('','isa','vmspikesummary.json','');
-				q_element = ndi_query('','depends_on','element_id',myelements_vmcorrected{p}.id());
-				q_epoch = ndi_query('epochid','exact_string',et(e).epoch_id,'');
+				q_spikestats = ndi.query('','isa','vmspikesummary.json','');
+				q_element = ndi.query('','depends_on','element_id',myelements_vmcorrected{p}.id());
+				q_epoch = ndi.query('epochid','exact_string',et(e).epoch_id,'');
 
 				sq = (q_spikestats & q_element & q_epoch);
 				docs = isstudy(i).E.database_search(sq);

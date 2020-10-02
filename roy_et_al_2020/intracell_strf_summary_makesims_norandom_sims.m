@@ -177,7 +177,7 @@ for i=1:numel(pref_struct.TT),
 			R = pref_struct.raw_data{i};
 		end;
 		if useG,
-			R = ndi_evaluate_fitcurve(gain_doc,0.025);
+			R = ndi.data.evaluate_fitcurve(gain_doc,0.025);
 		end;
 		prefs(end+1) = nanmean(R);
 	end;

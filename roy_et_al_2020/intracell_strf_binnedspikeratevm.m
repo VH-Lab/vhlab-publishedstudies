@@ -28,15 +28,15 @@ N = numel(et);
 
 E = app.session;
 
-gapp = ndi_app_markgarbage(E);
-iapp = ndi_app(E,'vhlab_voltage2firingrate');
+gapp = ndi.app.markgarbage(E);
+iapp = ndi.app(E,'vhlab_voltage2firingrate');
 
   % clear the elements and setup for adding them
-element_vmcorrected       = ndi_element_timeseries(E,sharpprobe.elementstring(),sharpprobe.reference, 'Vm_corrected',sharpprobe,0);
-element_vm_only_corrected = ndi_element_timeseries(E,sharpprobe.elementstring(),sharpprobe.reference, 'Vm_only_corrected',sharpprobe,0);
-element_subtractedvalue   = ndi_element_timeseries(E,sharpprobe.elementstring(),sharpprobe.reference, 'Vm_correctionvalue',sharpprobe,0);
-element_vmonly            = ndi_element_timeseries(E,sharpprobe.elementstring(),sharpprobe.reference, 'Vm_without_actionpotentials',sharpprobe,0);
-element_spikes            = ndi_element_timeseries(E,sharpprobe.elementstring(),sharpprobe.reference, 'spikes',sharpprobe,0);
+element_vmcorrected       = ndi.element.timeseries(E,sharpprobe.elementstring(),sharpprobe.reference, 'Vm_corrected',sharpprobe,0);
+element_vm_only_corrected = ndi.element.timeseries(E,sharpprobe.elementstring(),sharpprobe.reference, 'Vm_only_corrected',sharpprobe,0);
+element_subtractedvalue   = ndi.element.timeseries(E,sharpprobe.elementstring(),sharpprobe.reference, 'Vm_correctionvalue',sharpprobe,0);
+element_vmonly            = ndi.element.timeseries(E,sharpprobe.elementstring(),sharpprobe.reference, 'Vm_without_actionpotentials',sharpprobe,0);
+element_spikes            = ndi.element.timeseries(E,sharpprobe.elementstring(),sharpprobe.reference, 'spikes',sharpprobe,0);
 
 E.database_rm(element_vmonly.load_all_element_docs());
 E.database_rm(element_vm_only_corrected.load_all_element_docs());
@@ -50,15 +50,15 @@ element_subtractedvalue.newdocument();
 element_vmcorrected.newdocument();
 element_vm_only_corrected.newdocument();
 
-q_projvardef = ndi_query(intracell_strf_projectvardef);
-q_docname = ndi_query('ndi_document.name','exact_string','Epoch spike threshold','');
-q_elementid = ndi_query('','depends_on','element_id',sharpprobe.id());
+q_projvardef = ndi.query(intracell_strf_projectvardef);
+q_docname = ndi.query('ndi_document.name','exact_string','Epoch spike threshold','');
+q_elementid = ndi.query('','depends_on','element_id',sharpprobe.id());
 
 for n=1:N,
 
 	vm_baseline_correct = vm_baseline_correct_init;
 
-        q_epochid = ndi_query('epochid','exact_string',et(n).epoch_id,'');
+        q_epochid = ndi.query('epochid','exact_string',et(n).epoch_id,'');
         thresh_doc = E.database_search(q_elementid & q_projvardef & q_docname & q_epochid);
 	if isempty(thresh_doc), keyboard; end
 
@@ -83,7 +83,7 @@ for n=1:N,
 
 	% remove old docs before we write new ones
 	if 1,
-		vmspikefilterparameters_q = ndi_query('','isa','vmspikefilteringparameters.json','') & ...
+		vmspikefilterparameters_q = ndi.query('','isa','vmspikefilteringparameters.json','') & ...
 			q_elementid & q_epochid;
 		vmspikefilterparameters_doc = E.database_search(vmspikefilterparameters_q);
 		E.database_rm(vmspikefilterparameters_doc);
@@ -163,9 +163,9 @@ for n=1:N,
 	mydoc = mydoc.set_dependency_value('element_id',sharpprobe.id());
 	mydoc = mydoc.set_dependency_value('vmspikefilteringparameters_id',vmspikefilterparameters_doc.id());
 
-	olddoc =E.database_search(ndi_query('','isa','binnedspikeratevm.json','') & ...
-		ndi_query('epochid','exact_string',et(n).epoch_id,'') & ...
-		ndi_query('','depends_on','element_id',sharpprobe.id()));
+	olddoc =E.database_search(ndi.query('','isa','binnedspikeratevm.json','') & ...
+		ndi.query('epochid','exact_string',et(n).epoch_id,'') & ...
+		ndi.query('','depends_on','element_id',sharpprobe.id()));
 	E.database_rm(olddoc);
 	E.database_add(mydoc);
 

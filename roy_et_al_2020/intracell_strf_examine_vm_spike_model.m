@@ -20,8 +20,8 @@ E = app.session;
 et = epochtable(sharpprobe);
 N = numel(et);
 
-iapp = ndi_app(E,'vhlab_voltage2firingrate');
-gapp = ndi_app_markgarbage(E);
+iapp = ndi.app(E,'vhlab_voltage2firingrate');
+gapp = ndi.app.markgarbage(E);
 
 % need to do many elements
 % pull out firing rate and vm observations
@@ -31,13 +31,13 @@ gapp = ndi_app_markgarbage(E);
 % need to check the relationship with full stimuli
 
 
-q_spikeratevmdoc = ndi_query('','isa','binnedspikeratevm.json','');  % old, legacy
-q_elementid = ndi_query('','depends_on','element_id',sharpprobe.id());
-q_fitcurvedoc = ndi_query('','isa','fitcurve.json','');
-q_lt = ndi_query('fitcurve.fit_name','exact_string','linethreshold','');
-q_lpt = ndi_query('fitcurve.fit_name','exact_string', 'vlt.fit.linepowerthreshold','');
-q_lpt0 = ndi_query('fitcurve.fit_name','exact_string','linepowerthreshold_0','');
-q_tanh = ndi_query('fitcurve.fit_name','exact_string','vlt.fit.tanhfitoffset','');
+q_spikeratevmdoc = ndi.query('','isa','binnedspikeratevm.json','');  % old, legacy
+q_elementid = ndi.query('','depends_on','element_id',sharpprobe.id());
+q_fitcurvedoc = ndi.query('','isa','fitcurve.json','');
+q_lt = ndi.query('fitcurve.fit_name','exact_string','linethreshold','');
+q_lpt = ndi.query('fitcurve.fit_name','exact_string', 'vlt.fit.linepowerthreshold','');
+q_lpt0 = ndi.query('fitcurve.fit_name','exact_string','linepowerthreshold_0','');
+q_tanh = ndi.query('fitcurve.fit_name','exact_string','vlt.fit.tanhfitoffset','');
 
 
 
@@ -63,7 +63,7 @@ for n=1:N,
 		
 		tF = ds.parameters{1}.tFrequency;
 
-		q_epochid = ndi_query('epochid','exact_string',et(n).epoch_id,'');
+		q_epochid = ndi.query('epochid','exact_string',et(n).epoch_id,'');
 		
 		spikeratevmdoc = E.database_search(q_spikeratevmdoc & q_elementid & q_epochid);
 		if ~isempty(spikeratevmdoc),
@@ -113,7 +113,7 @@ for n=1:N,
 		
 		% Step 3: Plot responses to stimuli and model responses with pulled tuning curves
 		
-		tapp = ndi_app_tuning_response(E);
+		tapp = ndi.app.stimulus.tuning_response(E);
 		
 		resps = {'mean','F1'};
 		spike_resp_doc = {};
@@ -175,12 +175,12 @@ for n=1:N,
 			for j=1:size(vm_fr{1},1),
 				TT = 0:0.030:5;
 				VV = vm_fr{1}(j,1) + real(vm_fr{2}(j,1))*cos(2*pi*tF*TT) - imag(vm_fr{2}(j,1)) * sin(2*pi*tF*TT);
-				vm_fr{3}(j,2) = mean(ndi_evaluate_fitcurve(linepowerthresh_doc{1},VV));
-				vm_fr{4}(j,2) = ndi_evaluate_fitcurve(linepowerthresh_doc{1},VV(1));
-				vm_fr{5}(j,2) = ndi_evaluate_fitcurve(tanh_doc{1},VV(1));
+				vm_fr{3}(j,2) = mean(ndi.data.evaluate_fitcurve(linepowerthresh_doc{1},VV));
+				vm_fr{4}(j,2) = ndi.data.evaluate_fitcurve(linepowerthresh_doc{1},VV(1));
+				vm_fr{5}(j,2) = ndi.data.evaluate_fitcurve(tanh_doc{1},VV(1));
 				if ismember(pres_numbers(j),c),
 					g = find(stimpres==pres_numbers(j));
-					vm_fr{6}(j,2) = mean(ndi_evaluate_fitcurve(linepowerthresh_doc{1},vmobs{g}));
+					vm_fr{6}(j,2) = mean(ndi.data.evaluate_fitcurve(linepowerthresh_doc{1},vmobs{g}));
 					vm_generatedobs{g} = VV;
 					vm_fr{7}(j,1) = mean(frobs{g});
 				else,
@@ -251,17 +251,17 @@ global fit_curves_global
 fittypes = {'linethreshold','vlt.fit.linepowerthreshold','vlt.fit.tanhfitoffset','linepowerthreshold_0'};
 colors = {'y','m','g','k'};
 voltages = -0.100:0.001:0.050;
-q_fitcurvedoc = ndi_query('','isa','fitcurve.json','');
-q_elementid = ndi_query('','depends_on','element_id',sharpprobe.id());
-q_epochid = ndi_query('epochid','exact_string',epochid,'');
+q_fitcurvedoc = ndi.query('','isa','fitcurve.json','');
+q_elementid = ndi.query('','depends_on','element_id',sharpprobe.id());
+q_epochid = ndi.query('epochid','exact_string',epochid,'');
 
 for i=1:numel(fittypes),
-	q_variable = ndi_query('fitcurve.fit_name','exact_string',fittypes{i},'');
+	q_variable = ndi.query('fitcurve.fit_name','exact_string',fittypes{i},'');
 	fitdoc = sharpprobe.session.database_search(q_fitcurvedoc & q_epochid & q_elementid & q_variable);
     
 	if ~isempty(fitdoc),
 		fitdoc = vlt.data.celloritem(fitdoc,1);
-		fr = ndi_evaluate_fitcurve(fitdoc,voltages);
+		fr = ndi.data.evaluate_fitcurve(fitdoc,voltages);
 		hold on;
 		plot(voltages,fr,colors{i},'linewidth',2);
 	end;

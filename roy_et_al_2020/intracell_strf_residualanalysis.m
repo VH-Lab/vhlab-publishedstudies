@@ -18,8 +18,8 @@ E = app.session;
 et = epochtable(sharpprobe);
 N = numel(et);
 
-iapp = ndi_app(E,'vhlab_voltage2firingrate');
-gapp = ndi_app_markgarbage(E);
+iapp = ndi.app(E,'vhlab_voltage2firingrate');
+gapp = ndi.app.markgarbage(E);
 
  % need to output: neuralresponseresiduals.json
 
@@ -47,7 +47,7 @@ for n=1:N,
 		
 		% Pull out mean, F1 responses to stimuli, and the corresponding fits
 		
-		tapp = ndi_app_tuning_response(E);
+		tapp = ndi.app.stimulus.tuning_response(E);
 
 		response_types = {'mean','F1'};
 		spike_tune_doc = {};
@@ -150,13 +150,13 @@ for n=1:N,
 		vmneuralresponseresiduals.residual_power = residual_power;
 		
 		% search for old one
-		vmresp_resid_doc_old = E.database_search( ndi_query('','depends_on','element_id',ndi_vm_corrected_element.id()) & ...
-			ndi_query('','isa','vmneuralresponseresiduals.json','') & ...
-			ndi_query('vmneuralresponseresiduals.element_epochid','exact_string',et(n).epoch_id,''))
+		vmresp_resid_doc_old = E.database_search( ndi.query('','depends_on','element_id',ndi_vm_corrected_element.id()) & ...
+			ndi.query('','isa','vmneuralresponseresiduals.json','') & ...
+			ndi.query('vmneuralresponseresiduals.element_epochid','exact_string',et(n).epoch_id,''))
 		% remove old ones, preferred and non-preferred
 		E.database_rm(vmresp_resid_doc_old);
 
-		vmresp_resid_doc = ndi_document('apps/vhlab_voltage2firingrate/vmneuralresponseresiduals.json', ...
+		vmresp_resid_doc = ndi.document('apps/vhlab_voltage2firingrate/vmneuralresponseresiduals.json', ...
 			'vmneuralresponseresiduals', vmneuralresponseresiduals) + E.newdocument('ndi_document','ndi_document.name', 'Preferred response');
 		vmresp_resid_doc = vmresp_resid_doc.set_dependency_value('element_id',ndi_vm_corrected_element.id());
 		
@@ -222,13 +222,13 @@ for n=1:N,
 		vmneuralresponseresiduals.residual_power = residual_power;
 		
 		% search for old one
-		vmresp_resid_doc_old = E.database_search( ndi_query('','depends_on','element_id',ndi_vm_corrected_element.id()) & ...
-			ndi_query('','isa','vmneuralresponseresiduals.json','') & ndi_query('ndi_document.name','exact_string','Nonpreferred response','') & ...
-			ndi_query('vmneuralresponseresiduals.element_epochid','exact_string',et(n).epoch_id,''))
+		vmresp_resid_doc_old = E.database_search( ndi.query('','depends_on','element_id',ndi_vm_corrected_element.id()) & ...
+			ndi.query('','isa','vmneuralresponseresiduals.json','') & ndi.query('ndi_document.name','exact_string','Nonpreferred response','') & ...
+			ndi.query('vmneuralresponseresiduals.element_epochid','exact_string',et(n).epoch_id,''))
 		% remove old one
 		E.database_rm(vmresp_resid_doc_old);
 
-		vmresp_resid_doc = ndi_document('apps/vhlab_voltage2firingrate/vmneuralresponseresiduals.json', ...
+		vmresp_resid_doc = ndi.document('apps/vhlab_voltage2firingrate/vmneuralresponseresiduals.json', ...
 			'vmneuralresponseresiduals', vmneuralresponseresiduals) + E.newdocument('ndi_document','ndi_document.name','Nonpreferred response');
 		vmresp_resid_doc = vmresp_resid_doc.set_dependency_value('element_id',ndi_vm_corrected_element.id());
 		
@@ -297,13 +297,13 @@ for n=1:N,
 		vmneuralresponseresiduals.residual_power = residual_power;
 		
 		% search for old one
-		vmresp_resid_doc_old = E.database_search( ndi_query('','depends_on','element_id',ndi_vm_corrected_element.id()) & ...
-			ndi_query('','isa','vmneuralresponseresiduals.json','') & ndi_query('ndi_document.name','exact_string','Control response','') & ...
-			ndi_query('vmneuralresponseresiduals.element_epochid','exact_string',et(n).epoch_id,''))
+		vmresp_resid_doc_old = E.database_search( ndi.query('','depends_on','element_id',ndi_vm_corrected_element.id()) & ...
+			ndi.query('','isa','vmneuralresponseresiduals.json','') & ndi.query('ndi_document.name','exact_string','Control response','') & ...
+			ndi.query('vmneuralresponseresiduals.element_epochid','exact_string',et(n).epoch_id,''))
 		% remove old one
 		E.database_rm(vmresp_resid_doc_old);
 
-		vmresp_resid_doc = ndi_document('apps/vhlab_voltage2firingrate/vmneuralresponseresiduals.json', ...
+		vmresp_resid_doc = ndi.document('apps/vhlab_voltage2firingrate/vmneuralresponseresiduals.json', ...
 			'vmneuralresponseresiduals', vmneuralresponseresiduals) + E.newdocument('ndi_document','ndi_document.name','Control response');
 		vmresp_resid_doc = vmresp_resid_doc.set_dependency_value('element_id',ndi_vm_corrected_element.id());
 		

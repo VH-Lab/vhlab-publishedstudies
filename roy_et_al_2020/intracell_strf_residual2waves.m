@@ -3,7 +3,7 @@ function [out] = intracell_strf_residual2waves(E, vmresp_resid_doc)
 %
 % [OUT] = INTRACELL_STRF_RESIDUAL2WAVES(E, VMRESP_RESID_DOC)
 %
-% Given an NDI_DOCUMENT of type 'vmresponseresiduals.json' and NDI_EXPERIMENT object E, this function reads the waves TT,
+% Given an ndi.document of type 'vmresponseresiduals.json' and NDI_EXPERIMENT object E, this function reads the waves TT,
 % raw_data, VV, rawer_data, and the residual res from the binary fork. These variables are returned in a structure, OUT.
 %
 %

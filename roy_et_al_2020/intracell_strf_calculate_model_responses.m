@@ -20,28 +20,28 @@ E = app.session;
 et = epochtable(sharpprobe);
 N = numel(et);
 
-iapp = ndi_app(E,'vhlab_voltage2firingrate');
-gapp = ndi_app_markgarbage(E);
+iapp = ndi.app(E,'vhlab_voltage2firingrate');
+gapp = ndi.app.markgarbage(E);
 
   % calculate model responses with actual Vm input
-element_rawvm_fr_model_linepowerthresh = ndi_element_timeseries(E, sharpprobe.elementstring(), sharpprobe.reference, ...
+element_rawvm_fr_model_linepowerthresh = ndi.element.timeseries(E, sharpprobe.elementstring(), sharpprobe.reference, ...
 	'RawVmFr_model_selfconsistencycheck_linepowerthresh',sharpprobe,0);
 E.database_rm(element_rawvm_fr_model_linepowerthresh.load_all_element_docs());
 E.database_add(element_rawvm_fr_model_linepowerthresh.newdocument());
 
   % calculate membrane responses with simulated Vm input: F0 + F1 only
-element_simvm_model_linepowerthresh = ndi_element_timeseries(E, sharpprobe.elementstring(), sharpprobe.reference, ...
+element_simvm_model_linepowerthresh = ndi.element.timeseries(E, sharpprobe.elementstring(), sharpprobe.reference, ...
 	'SimVm_model_selfconsistencycheck_linepowerthresh',sharpprobe,0);
 E.database_rm(element_simvm_model_linepowerthresh.load_all_element_docs());
 element_simvm_model_linepowerthresh.newdocument(); % adds to database
 
   % calculate firing rate model responses with simulated Vm input: F0 + F1 only
-element_simvm_fr_model_linepowerthresh = ndi_element_timeseries(E, sharpprobe.elementstring(), sharpprobe.reference, ...
+element_simvm_fr_model_linepowerthresh = ndi.element.timeseries(E, sharpprobe.elementstring(), sharpprobe.reference, ...
 	'SimVmFr_model_selfconsistencycheck_linepowerthresh',sharpprobe,0);
 E.database_rm(element_simvm_fr_model_linepowerthresh.load_all_element_docs());
 element_simvm_fr_model_linepowerthresh.newdocument(); % adds to database
 
-tapp = ndi_app_tuning_response(E);
+tapp = ndi.app.stimulus.tuning_response(E);
 
 
 for n=1:N,
@@ -65,10 +65,10 @@ for n=1:N,
 	if isdirectionepoch,
 
 		tF = ds.parameters{1}.tFrequency;
-		linepowerthresh_doc = E.database_search(ndi_query('','isa','fitcurve.json','') & ...
-			ndi_query('fitcurve.fit_name','exact_string','vlt.fit.linepowerthreshold','') & ...
-			ndi_query('','depends_on','element_id',sharpprobe.id()) & ...
-			ndi_query('epochid','exact_string',et(n).epoch_id,''));
+		linepowerthresh_doc = E.database_search(ndi.query('','isa','fitcurve.json','') & ...
+			ndi.query('fitcurve.fit_name','exact_string','vlt.fit.linepowerthreshold','') & ...
+			ndi.query('','depends_on','element_id',sharpprobe.id()) & ...
+			ndi.query('epochid','exact_string',et(n).epoch_id,''));
 
 		[raw_vm, t, timeref_] = ndi_vm_corrected_element.readtimeseries(timeref, interval(1,1), interval(1,2));
 		dt = t(2)-t(1);
@@ -77,7 +77,7 @@ for n=1:N,
 		smoothed_vm = conv(raw_vm,ones(1,bin_samples)/bin_samples,'same');
 		smoothed_vm = smoothed_vm(1:bin_samples:end);
 		smoothed_t = t(1:bin_samples:end);
-		rawfr = ndi_evaluate_fitcurve(linepowerthresh_doc{1},smoothed_vm);
+		rawfr = ndi.data.evaluate_fitcurve(linepowerthresh_doc{1},smoothed_vm);
 
 		resps = {'mean','F1'};
                 spike_resp_doc = {};
@@ -107,7 +107,7 @@ for n=1:N,
 			end;
 		end;
 
-		simfr = ndi_evaluate_fitcurve(linepowerthresh_doc{1},smoothed_vm_sim);
+		simfr = ndi.data.evaluate_fitcurve(linepowerthresh_doc{1},smoothed_vm_sim);
 
 		figure;
 		ax(1)=subplot(2,1,1);

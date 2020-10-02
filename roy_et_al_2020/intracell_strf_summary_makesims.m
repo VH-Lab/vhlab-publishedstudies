@@ -145,12 +145,12 @@ prefs = [];
 
 for i=1:numel(pref_struct.TT),
 	if ~any(isnan(pref_struct.raw_data{i})),
-		R = ndi_evaluate_fitcurve(gain_doc,pref_struct.raw_data{i});
+		R = ndi.data.evaluate_fitcurve(gain_doc,pref_struct.raw_data{i});
 		if useV, 
 			R = pref_struct.raw_data{i};
 		end;
 		if useG,
-			R = ndi_evaluate_fitcurve(gain_doc,0.025);
+			R = ndi.data.evaluate_fitcurve(gain_doc,0.025);
 		end;
 		prefs(end+1) = nanmean(R);
 	end;
@@ -160,7 +160,7 @@ nulls = [];
 
 for i=1:numel(null_struct.TT),
 	if ~any(isnan(null_struct.raw_data{i})),
-		R = ndi_evaluate_fitcurve(gain_doc,null_struct.raw_data{i});
+		R = ndi.data.evaluate_fitcurve(gain_doc,null_struct.raw_data{i});
 		if useV, 
 			R = null_struct.raw_data{i};
 		end;
@@ -175,7 +175,7 @@ controls = [];
 
 for i=1:numel(control_struct.TT),
 	if ~any(isnan(control_struct.raw_data{i})),
-		R = ndi_evaluate_fitcurve(gain_doc,control_struct.raw_data{i});
+		R = ndi.data.evaluate_fitcurve(gain_doc,control_struct.raw_data{i});
 		if useV, 
 			R = control_struct.raw_data{i};
 		end;

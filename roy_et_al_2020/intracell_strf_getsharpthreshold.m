@@ -6,8 +6,8 @@ function threshold = intracell_strf_getsharpthreshold(sharpprobe)
 % Loads the data from the probe SHARP_PROBE and prompts the user to draw it graphically.
 %
 
-if ~isa(sharpprobe,'ndi_probe_timeseries_mfdaq'),
-	error(['Expected an ndi_probe_timeseries_mfdaq object for SHARP_PROBE']);
+if ~isa(sharpprobe,'ndi.probe.timeseries.mfdaq'),
+	error(['Expected an ndi.probe.timeseries.mfdaq object for SHARP_PROBE']);
 end
 
   % how to handle multiple epochs? Multiple thresholds? OK
@@ -18,14 +18,14 @@ et = epochtable(sharpprobe);
 
 E = sharpprobe.session;
 
-q_projvardef = ndi_query(intracell_strf_projectvardef);
-q_docname = ndi_query('ndi_document.name','exact_string','Epoch spike threshold','');
-q_elementid = ndi_query('','depends_on','element_id',sharpprobe.id());
+q_projvardef = ndi.query(intracell_strf_projectvardef);
+q_docname = ndi.query('ndi_document.name','exact_string','Epoch spike threshold','');
+q_elementid = ndi.query('','depends_on','element_id',sharpprobe.id());
 
 for n=1:numel(et),
 
 	% remove any previous threshold calls for this epoch
-        q_epochid = ndi_query('epochid','exact_string',et(n).epoch_id,'');
+        q_epochid = ndi.query('epochid','exact_string',et(n).epoch_id,'');
         thresh_doc = E.database_search(q_elementid & q_projvardef & q_docname & q_epochid);
 	E.database_rm(thresh_doc);
 
