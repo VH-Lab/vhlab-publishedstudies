@@ -11,8 +11,8 @@ function intracell_strf_setsharpthresholds(app, E)
 % 
 %  
 
-q_projectvardef = ndi_query(intracell_strf_projectvardef);
-q_docname = ndi_query('ndi_document.name','exact_string','Epoch spike threshold','');
+q_projectvardef = ndi.query(intracell_strf_projectvardef);
+q_docname = ndi.query('ndi_document.name','exact_string','Epoch spike threshold','');
 
 probes = getprobes(E);
 
@@ -28,10 +28,10 @@ for i=1:numel(probes),
 
 	if strcmp(probes{i}.type,'sharp-Vm'),
 		et = epochtable(probes{i});
-		q_elementid = ndi_query('','depends_on','element_id',probes{i}.id());
+		q_elementid = ndi.query('','depends_on','element_id',probes{i}.id());
 		all_matched = 1;
 		for n=1:numel(et),
-        		q_epochid = ndi_query('epochid','exact_string',et(n).epoch_id,'');
+        		q_epochid = ndi.query('epochid','exact_string',et(n).epoch_id,'');
 			docs = E.database_search( q_epochid & q_elementid & q_projectvardef & q_docname );
 			if isempty(docs),
 				all_matched=0;

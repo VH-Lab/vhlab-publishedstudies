@@ -8,7 +8,7 @@ function [fr, v, timepoints] = intracell_strf_binnedspikeratevm(app, sharpprobe,
 % --------------------------------------------------------------
 % binwidth (0.030)           | Bin width in seconds
 % vm_baseline_correct        | Number of seconds to use to correct prestimulus baseline
-%                            |   (passed to VOLTAGE_FIRINGRATE_OBSERVATIONS)
+%                            |   (passed to vlt.neuro.membrane.voltage_firingrate_observations)
 % displayresults (1)         | Display the results (0/1)
 %
 
@@ -16,27 +16,27 @@ function [fr, v, timepoints] = intracell_strf_binnedspikeratevm(app, sharpprobe,
 
 binwidth = 0.030;   % default value because used in Priebe Ferster 2005
 vm_baseline_correct_init = 5;
-vm_baseline_correct_func = 'prctile20';
+vm_baseline_correct_func = 'vlt.math.prctile20';
 displayresults = 1;
 
 stimuli_to_include = 'all'; % or 'preferred_ori+/-3';
 
-assign(varargin{:});
+vlt.data.assign(varargin{:});
 
 et = epochtable(sharpprobe);
 N = numel(et);
 
 E = app.session;
 
-gapp = ndi_app_markgarbage(E);
-iapp = ndi_app(E,'vhlab_voltage2firingrate');
+gapp = ndi.app.markgarbage(E);
+iapp = ndi.app(E,'vhlab_voltage2firingrate');
 
   % clear the elements and setup for adding them
-element_vmcorrected       = ndi_element_timeseries(E,sharpprobe.elementstring(),sharpprobe.reference, 'Vm_corrected',sharpprobe,0);
-element_vm_only_corrected = ndi_element_timeseries(E,sharpprobe.elementstring(),sharpprobe.reference, 'Vm_only_corrected',sharpprobe,0);
-element_subtractedvalue   = ndi_element_timeseries(E,sharpprobe.elementstring(),sharpprobe.reference, 'Vm_correctionvalue',sharpprobe,0);
-element_vmonly            = ndi_element_timeseries(E,sharpprobe.elementstring(),sharpprobe.reference, 'Vm_without_actionpotentials',sharpprobe,0);
-element_spikes            = ndi_element_timeseries(E,sharpprobe.elementstring(),sharpprobe.reference, 'spikes',sharpprobe,0);
+element_vmcorrected       = ndi.element.timeseries(E,sharpprobe.elementstring(),sharpprobe.reference, 'Vm_corrected',sharpprobe,0);
+element_vm_only_corrected = ndi.element.timeseries(E,sharpprobe.elementstring(),sharpprobe.reference, 'Vm_only_corrected',sharpprobe,0);
+element_subtractedvalue   = ndi.element.timeseries(E,sharpprobe.elementstring(),sharpprobe.reference, 'Vm_correctionvalue',sharpprobe,0);
+element_vmonly            = ndi.element.timeseries(E,sharpprobe.elementstring(),sharpprobe.reference, 'Vm_without_actionpotentials',sharpprobe,0);
+element_spikes            = ndi.element.timeseries(E,sharpprobe.elementstring(),sharpprobe.reference, 'spikes',sharpprobe,0);
 
 E.database_rm(element_vmonly.load_all_element_docs());
 E.database_rm(element_vm_only_corrected.load_all_element_docs());
@@ -50,15 +50,15 @@ element_subtractedvalue.newdocument();
 element_vmcorrected.newdocument();
 element_vm_only_corrected.newdocument();
 
-q_projvardef = ndi_query(intracell_strf_projectvardef);
-q_docname = ndi_query('ndi_document.name','exact_string','Epoch spike threshold','');
-q_elementid = ndi_query('','depends_on','element_id',sharpprobe.id());
+q_projvardef = ndi.query(intracell_strf_projectvardef);
+q_docname = ndi.query('ndi_document.name','exact_string','Epoch spike threshold','');
+q_elementid = ndi.query('','depends_on','element_id',sharpprobe.id());
 
 for n=1:N,
 
 	vm_baseline_correct = vm_baseline_correct_init;
 
-        q_epochid = ndi_query('epochid','exact_string',et(n).epoch_id,'');
+        q_epochid = ndi.query('epochid','exact_string',et(n).epoch_id,'');
         thresh_doc = E.database_search(q_elementid & q_projvardef & q_docname & q_epochid);
 	if isempty(thresh_doc), keyboard; end
 
@@ -83,7 +83,7 @@ for n=1:N,
 
 	% remove old docs before we write new ones
 	if 1,
-		vmspikefilterparameters_q = ndi_query('','isa','vmspikefilteringparameters.json','') & ...
+		vmspikefilterparameters_q = ndi.query('','isa','vmspikefilteringparameters.json','') & ...
 			q_elementid & q_epochid;
 		vmspikefilterparameters_doc = E.database_search(vmspikefilterparameters_q);
 		E.database_rm(vmspikefilterparameters_doc);
@@ -94,7 +94,7 @@ for n=1:N,
 	vmspikefilterparameters_doc = vmspikefilterparameters_doc.set_dependency_value('element_id',sharpprobe.id());
 	E.database_add(vmspikefilterparameters_doc);
 
-	[vm, t, spiketimes] = vmnospikes(data, si, 'Tstart', t_raw(1), 'newsi', newsi, ...
+	[vm, t, spiketimes] = vlt.neuro.membrane.vmnospikes(data, si, 'Tstart', t_raw(1), 'newsi', newsi, ...
 		'thresh', thresh, 'filter_algorithm', 'medfilt1','MedFilterWidth',medfiltwidth,'refract',refract,'rm60hz',rm60Hz);
 
 	element_vmonly.addepoch(timeref.epoch, timeref.clocktype, [interval(1,1), interval(1,2)], t(:), vm(:));
@@ -124,10 +124,10 @@ for n=1:N,
 
 	if ~strcmpi(stimuli_to_include,'all'),
 		disp('not including all stimuli, only a subset.');
-		spikerates = spiketimes2bins(spiketimes,t) ./ (t(2)-t(1));
-		[mean_v0,mean_fr0,mean_stimid0] = voltage_firingrate_observations_per_stimulus(vm, spikerates(:), t, stim_onsetoffsetid,'pretime',5);
+		spikerates = vlt.neuro.spiketrains.spiketimes2bins(spiketimes,t) ./ (t(2)-t(1));
+		[mean_v0,mean_fr0,mean_stimid0] = vlt.neuro.membrane.voltage_firingrate_observations_per_stimulus(vm, spikerates(:), t, stim_onsetoffsetid,'pretime',5);
 		if isfield(ds.parameters{1},'tFrequency'),
-			[mean_v1,mean_fr1,mean_stimid1] = voltage_firingrate_observations_per_stimulus(vm, spikerates(:), t, ds.stimid, ...
+			[mean_v1,mean_fr1,mean_stimid1] = vlt.neuro.membrane.voltage_firingrate_observations_per_stimulus(vm, spikerates(:), t, ds.stimid, ...
 				stim_onsetoffsetid, 'pretime', 5, 'f1', ds.parameters{1}.tFrequency);
 		else,
 			mean_v1 = 0 * mean_v0;
@@ -148,7 +148,7 @@ for n=1:N,
 		unique(stim_onsetoffsetid(:,3)),
 	end;
 
-	[v, fr, stimid, timepoints, vm_baselinecorrected, exactbintime] = voltage_firingrate_observations(t, vm, spiketimes, ...
+	[v, fr, stimid, timepoints, vm_baselinecorrected, exactbintime] = vlt.neuro.membrane.voltage_firingrate_observations(t, vm, spiketimes, ...
 		'stim_onsetoffsetid', stim_onsetoffsetid,'vm_baseline_correct',vm_baseline_correct,...
 		'vm_baseline_correct_func',vm_baseline_correct_func,'binsize',binwidth);
 
@@ -163,9 +163,9 @@ for n=1:N,
 	mydoc = mydoc.set_dependency_value('element_id',sharpprobe.id());
 	mydoc = mydoc.set_dependency_value('vmspikefilteringparameters_id',vmspikefilterparameters_doc.id());
 
-	olddoc =E.database_search(ndi_query('','isa','binnedspikeratevm.json','') & ...
-		ndi_query('epochid','exact_string',et(n).epoch_id,'') & ...
-		ndi_query('','depends_on','element_id',sharpprobe.id()));
+	olddoc =E.database_search(ndi.query('','isa','binnedspikeratevm.json','') & ...
+		ndi.query('epochid','exact_string',et(n).epoch_id,'') & ...
+		ndi.query('','depends_on','element_id',sharpprobe.id()));
 	E.database_rm(olddoc);
 	E.database_add(mydoc);
 
@@ -173,7 +173,7 @@ for n=1:N,
 		figure('name','myname');
 		intracell_strf_plotbinnedspikeratevm(app, sharpprobe, stimprobe, 'epochid', et(n).epoch_id);
 
-		[h,htext] = plot_voltage_firingrate_observations(v, fr, stimid, timepoints, vm_baselinecorrected, t, vm, ...
+		[h,htext] = vlt.neuro.membrane.plot_voltage_firingrate_observations(v, fr, stimid, timepoints, vm_baselinecorrected, t, vm, ...
 			'stim_onsetoffsetid', stim_onsetoffsetid);
 		thetitle = get(get(gca,'title'),'string');
 		thetitle = { [sharpprobe.elementstring() '@' et(n).epoch_id], thetitle};

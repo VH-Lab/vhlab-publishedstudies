@@ -29,7 +29,7 @@ for i=1:2:numel(varargin),
 			error(['No file ' reftxt '.']);
 		end
 		alltfolders = setdiff(alltfolders,t_folders{j});
-		z = loadStructArray(reftxt);
+		z = vlt.file.loadStructArray(reftxt);
 		if numel(z)~=1,
 			error(['Too many entries in ' reftxt ', do not know what to do.']);
 		end
@@ -38,15 +38,15 @@ for i=1:2:numel(varargin),
 		z(1).type = 'sharp-Vm';
 		z,
 		if 1,
-			saveStructArray(reftxt, z);
+			vlt.file.saveStructArray(reftxt, z);
 		end
 		channelgroupingtxt = [tname filesep 'vhspike2_channelgrouping.txt'];
 		channelgroupingstruct = struct('name',z(1).name,'ref',z(1).ref,'channel_list',spike2channel);
 		if 1,
-			saveStructArray(channelgroupingtxt,channelgroupingstruct);
+			vlt.file.saveStructArray(channelgroupingtxt,channelgroupingstruct);
 		end
 	end
 end;
 
-disp(['Leftover t folders: ' cell2str(alltfolders) ])
+disp(['Leftover t folders: ' vlt.data.cell2str(alltfolders) ])
 

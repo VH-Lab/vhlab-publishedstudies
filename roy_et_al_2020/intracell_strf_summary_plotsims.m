@@ -37,11 +37,11 @@ set(hb,'facecolor',[0.5 0.5 0.5]);
 
 hold on;
 
-h = myerrorbar([1:4]-0.25,mn,qrt_low-mn,qrt_high-mn);
+h = vlt.plot.myerrorbar([1:4]-0.25,mn,qrt_low-mn,qrt_high-mn);
 delete(h(2));
 set(h(1),'color',[0 0 0]);
 if plot_95_5,
-	h = myerrorbar([1:4]-0.25,mn,prc_low-mn,prc_high-mn);
+	h = vlt.plot.myerrorbar([1:4]-0.25,mn,prc_low-mn,prc_high-mn);
 	delete(h(2));
 	set(h(1),'color',[0 0 0]);
 end;
@@ -92,26 +92,26 @@ set(hb,'facecolor',[0.5 0.5 0.5]);
 
 hold on;
 
-h = myerrorbar([1:2:8],mn_p,qrt_low_p-mn_p,qrt_high_p-mn_p);
+h = vlt.plot.myerrorbar([1:2:8],mn_p,qrt_low_p-mn_p,qrt_high_p-mn_p);
 delete(h(2));
 set(h(1),'color',[0 0 0]);
 box off;
 axis([0 5 0 1]);
 
-h = myerrorbar([2:2:8],mn_n,qrt_low_n-mn_n,qrt_high_n-mn_n);
+h = vlt.plot.myerrorbar([2:2:8],mn_n,qrt_low_n-mn_n,qrt_high_n-mn_n);
 delete(h(2));
 set(h(1),'color',[0 0 0]);
 box off;
 axis([0 9 0 20]);
 
 if plot_95_5,
-	h = myerrorbar([1:2:8],mn_p,prc_low_p-mn_p,prc_high_p-mn_p);
+	h = vlt.plot.myerrorbar([1:2:8],mn_p,prc_low_p-mn_p,prc_high_p-mn_p);
 	delete(h(2));
 	set(h(1),'color',[0 0 0]);
 	box off;
 	axis([0 5 0 1]);
 
-	h = myerrorbar([2:2:8],mn_n,prc_low_n-mn_n,prc_high_n-mn_n);
+	h = vlt.plot.myerrorbar([2:2:8],mn_n,prc_low_n-mn_n,prc_high_n-mn_n);
 	delete(h(2));
 	set(h(1),'color',[0 0 0]);
 	box off;

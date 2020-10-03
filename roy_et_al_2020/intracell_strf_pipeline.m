@@ -15,7 +15,7 @@ function intracell_strf_pipeline(expdir, varargin)
 % extract_spikewaves (1)                | Should we extract spikewaves?
 % analyze_spikewaves (1)                | Should we analyze spikewaves?
 %
-% See also: NAMEVALUEPAIR
+% See also: vlt.data.namevaluepair
 %
 
 
@@ -34,22 +34,22 @@ plot_residuals = 1;
 generate_sim_fit = 1;
 analyze_fits = 1;
 
-assign(varargin{:});
+vlt.data.assign(varargin{:});
 
-s=workspace2struct
+s=vlt.data.workspace2struct
 
 [parentdir,expname] = fileparts(expdir)
 
-E = ndi_vhlab_expdir(expname, expdir);
+E = ndi.setups.vhlab_expdir(expname, expdir);
 
  % if we have any stale element reference documents, delete them
-d = ndi_finddocs_missing_dependencies(E),
+d = ndi.database.fun.finddocs_missing_dependencies(E),
 if ~isempty(d),
 	keyboard;
 end;
 E.database_rm(d);
 
-app = ndi_app(E, 'intracell_strf');
+app = ndi.app(E, 'intracell_strf');
 
 if setsharpthresholds, 
 	intracell_strf_setsharpthresholds(app, E);
@@ -286,6 +286,6 @@ if analyze_spikewaves,
 end;
 
  % if we have any stale element reference documents, delete them
-d = ndi_finddocs_missing_dependencies(E),
+d = ndi.database.fun.finddocs_missing_dependencies(E),
 %E.database_rm(d);
 

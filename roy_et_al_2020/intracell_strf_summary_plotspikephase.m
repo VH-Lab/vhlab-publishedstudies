@@ -9,7 +9,7 @@ wvf = figure;
 
 col = [1 0 1];
 
-t_master = colvec(-0.003:0.0001:0.003);
+t_master = vlt.data.colvec(-0.003:0.0001:0.003);
 
 spikeshapes{1} = []; % young
 spikeshapes{2} = []; %old
@@ -18,7 +18,7 @@ for i=1:1:numel(O),
 	figure(f);
 	t = spikeshape_struct(O(i)).spike_summary.sample_times(11:end-10);
 	dt = diff(spikeshape_struct(O(i)).spike_summary.sample_times(1:2));
-	v = colvec(spikeshape_struct(O(i)).spike_summary.mean_spikewave(11:end-10));
+	v = vlt.data.colvec(spikeshape_struct(O(i)).spike_summary.mean_spikewave(11:end-10));
 	if max(v)<0.04, continue; end;
 	if spikeshape_struct(O(i)).spike_summary.number_of_spikes<=15, continue; end;
 	v_dot = gradient(v',dt);
@@ -41,7 +41,7 @@ for i=1:1:numel(Y),
 	figure(f);
 	t = spikeshape_struct(Y(i)).spike_summary.sample_times(11:end-10);
 	dt = diff(spikeshape_struct(Y(i)).spike_summary.sample_times(1:2));
-	v = colvec(spikeshape_struct(Y(i)).spike_summary.mean_spikewave(11:end-10));
+	v = vlt.data.colvec(spikeshape_struct(Y(i)).spike_summary.mean_spikewave(11:end-10));
 	if max(v)<0.04, continue; end;
 	if spikeshape_struct(Y(i)).spike_summary.number_of_spikes<=15, continue; end;
 	v_dot = gradient(v',dt);

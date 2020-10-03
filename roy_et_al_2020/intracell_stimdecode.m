@@ -11,13 +11,13 @@ function [fr, v, timepoints] = intracell_stimdecode(app, stimprobe, varargin)
 
 displayresults = 1;
 
-assign(varargin{:});
+vlt.data.assign(varargin{:});
 
 E = app.session; 
 
-sapp = ndi_app_stimulus_decoder(E);
+sapp = ndi.app.stimulus.decoder(E);
 [docs,edocs] = sapp.parse_stimuli(stimprobe,1);
 
-rapp = ndi_app_tuning_response(E);
+rapp = ndi.app.stimulus.tuning_response(E);
 rapp.label_control_stimuli(stimprobe,1);
 

@@ -19,7 +19,7 @@ fullvm =   get(ch(2),'Ydata');
 filtervm_t = get(ch(1),'XData');
 filtervm =   get(ch(1),'Ydata');
 
-spikeindex = threshold_crossings(fullvm,thresh);
+spikeindex = vlt.signal.threshold_crossings(fullvm,thresh);
 spiketimes = fullvm_t(spikeindex);
 spikevalues = 0*fullvm;
 spikevalues(spikeindex) = 1;
@@ -32,11 +32,11 @@ shifted_t = get(ch(1),'XData');
 shifted = get(ch(1),'Ydata');
 
 binned_t = T(1)-0.5*binwidth:binwidth:T(end)+0.5*binwidth;
-[VYn,VTn] = slidingwindowfunc(shifted_t,shifted, binned_t(1), binwidth, binned_t(end), binwidth, 'mean' , 1);
-[Cn,STn] = slidingwindowfunc(fullvm_t, spikevalues, binned_t(1), binwidth, binned_t(end), binwidth, 'sum', 1);
+[VYn,VTn] = vlt.math.slidingwindowfunc(shifted_t,shifted, binned_t(1), binwidth, binned_t(end), binwidth, 'mean' , 1);
+[Cn,STn] = vlt.math.slidingwindowfunc(fullvm_t, spikevalues, binned_t(1), binwidth, binned_t(end), binwidth, 'sum', 1);
 
-binned_steps = stepfunc( [binned_t(1:end-1)']', VYn(:)', shifted_t(:)', 0);
-binned_fr = stepfunc( [binned_t(1:end-1)']', Cn(:)', shifted_t(:)', 0);
+binned_steps = vlt.math.stepfunc( [binned_t(1:end-1)']', VYn(:)', shifted_t(:)', 0);
+binned_fr = vlt.math.stepfunc( [binned_t(1:end-1)']', Cn(:)', shifted_t(:)', 0);
 
 fig = figure;
 

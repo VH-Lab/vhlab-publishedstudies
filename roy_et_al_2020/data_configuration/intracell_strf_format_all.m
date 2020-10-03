@@ -14,7 +14,7 @@ if nargin<2,
 	prefix = '/Volumes/van-hooser-lab/Users/steve/araniintracellular/';
 end
 
-z = loadStructArray(filename);
+z = vlt.file.loadStructArray(filename);
 
 for i=1:numel(z),
 	expdatenum = datenum(z(i).Date);
@@ -32,7 +32,7 @@ for i=1:numel(z),
 		tfolders_here = cat(1,tfolders_here,sprintf(['t%.5d'],tfoldernum));
 	end
 
-	disp(['Info for session ' int2str(i) ': expname is ' expname ', cellNo is ' int2str(z(i).cellNo) ' and tfolders are ' cell2str(tfolders_here) '.']);
+	disp(['Info for session ' int2str(i) ': expname is ' expname ', cellNo is ' int2str(z(i).cellNo) ' and tfolders are ' vlt.data.cell2str(tfolders_here) '.']);
 
 	if 1,
 		intracell_strf_format_exp_dir([prefix filesep expname], z(i).spike2channel, z(i).cellNo, tfolders_here);

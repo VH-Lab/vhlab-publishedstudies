@@ -12,12 +12,12 @@ function intracell_strf_analyzespikewaves(app, sharpprobe, varargin)
 displayresults = 1;
 debug_plot = 0;
 
-assign(varargin{:});
+vlt.data.assign(varargin{:});
 
 E = app.session;
-sapp = ndi_app_spikeextractor(E);
+sapp = ndi.app.spikeextractor(E);
 element_vmcorrected = E.getelements('element.type','Vm_corrected','element.name',sharpprobe.elementstring());
-element_vmcorrected = celloritem(element_vmcorrected,1);
+element_vmcorrected = vlt.data.celloritem(element_vmcorrected,1);
 
 et = epochtable(element_vmcorrected);
 N = numel(et);
@@ -31,7 +31,7 @@ for n=1:N,
 	z = squeeze(w); %this is a squeezed matrix of columns, one column per spike wave
     
 	t = (wp.S0:wp.S1)/wp.samplerate;
-	spike_peak_index = findclosest(t,0);
+	spike_peak_index = vlt.data.findclosest(t,0);
     
 	indexes = 1+find(diff(st)>0.100); % look at spikes that have a preceeding inter-spike-interval of at least 100ms
 	gz = z(:,indexes); %new array of z values as columns only specificed by indexes (which is what we plot later) 
@@ -42,10 +42,10 @@ for n=1:N,
 	element_doc = ndi_element_obj.load_element_doc();
 
 	if ~isempty(element_doc), % search for an existing document; if it exists, remove it so we can replace it with our new one
-		q_spikestats = ndi_query('','isa','vmspikesummary.json','');
-		q_element = ndi_query('','depends_on','element_id',element_doc.id());
-		q_spikewave = ndi_query('','depends_on','spike_extraction_id',spikewaves_doc.id());
-		q_epoch = ndi_query('epochid','exact_string',et(n).epoch_id,'');
+		q_spikestats = ndi.query('','isa','vmspikesummary.json','');
+		q_element = ndi.query('','depends_on','element_id',element_doc.id());
+		q_spikewave = ndi.query('','depends_on','spike_extraction_id',spikewaves_doc.id());
+		q_epoch = ndi.query('epochid','exact_string',et(n).epoch_id,'');
 		sq = (q_spikestats & q_element & q_epoch);
 		docs = E.database_search(sq);
 		E.database_rm(docs);
@@ -56,8 +56,8 @@ for n=1:N,
 	n_skwaves = [];
 	spike_summary_doc = [];
     
-	for c = 1:size(gz,2) %runs spikekink down every column in gz
-		[spikewave_Vtrim, spikewave_NZ_start, spikepeak_trim_loc, spikewave_NZ_end] = spikewavetrimmer(gz(:,c), spike_peak_index);
+	for c = 1:size(gz,2) %runs vlt.neuro.membrane.spikekink down every column in gz
+		[spikewave_Vtrim, spikewave_NZ_start, spikepeak_trim_loc, spikewave_NZ_end] = vlt.neuro.membrane.spikewavetrimmer(gz(:,c), spike_peak_index);
         
 		spike_trim_times(c,:) = [spikewave_NZ_start,spikepeak_trim_loc, spikewave_NZ_end];
 		t_trim = (spike_trim_times(c,1:3));
@@ -65,7 +65,7 @@ for n=1:N,
 
 		n_skwaves = 1:size(gz,2);
         
-		[kink_vm, max_dvdt, kink_index, slope_criterion] = spikekink(spikewave_Vtrim, ...
+		[kink_vm, max_dvdt, kink_index, slope_criterion] = vlt.neuro.membrane.spikekink(spikewave_Vtrim, ...
 			t(t_index), t_trim(2),'search_interval', t(t_trim(1)), 'slope_criterion', 0.033);
             
 		if isempty(kink_vm), %stops the code to debug if no kink_vm value is returned
@@ -73,7 +73,7 @@ for n=1:N,
 			keyboard;
 		end
         
-		[FWHM, hm_presk_loc, hm_postsk_loc, V_hm,presk_WHM, postsk_WHM] = spikeFWHM(spikewave_Vtrim,max(spikewave_Vtrim), ...
+		[FWHM, hm_presk_loc, hm_postsk_loc, V_hm,presk_WHM, postsk_WHM] = vlt.neuro.membrane.spikeFWHM(spikewave_Vtrim,max(spikewave_Vtrim), ...
 				spikepeak_trim_loc, kink_vm, kink_index, wp.samplerate, t(t_index));
         
 		if isempty(V_hm), %stops the code to debug if no V_hm value is returned
@@ -202,8 +202,8 @@ for n=1:N,
 	end;
 	spike_stats.slope_criterion = slope_criterion;
 
-	%create a summary ndi_document for each epoch
-	spike_summary_doc = ndi_document('apps/vhlab_voltage2firingrate/vmspikesummary.json',...
+	%create a summary ndi.document for each epoch
+	spike_summary_doc = ndi.document('apps/vhlab_voltage2firingrate/vmspikesummary.json',...
 		'vmspikesummary', spike_stats,'epochid',et(n).epoch_id) + E.newdocument();
 	spike_summary_doc = spike_summary_doc.set_dependency_value('element_id',element_vmcorrected.id());
 	spike_summary_doc = spike_summary_doc.set_dependency_value('spike_extraction_id',spikewaves_doc.id());

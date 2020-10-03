@@ -11,26 +11,26 @@ function intracell_strf_residualanalysis(app, sharpprobe, stimprobe, ndi_spike_e
 
 displayresults = 1;
 
-assign(varargin{:});
+vlt.data.assign(varargin{:});
 
 E = app.session;
 
 et = epochtable(sharpprobe);
 N = numel(et);
 
-iapp = ndi_app(E,'vhlab_voltage2firingrate');
+iapp = ndi.app(E,'vhlab_voltage2firingrate');
 
  % need to output: neuralresponseresiduals.json
 
 for n=1:N,
 
-	vmresp_resid_doc = E.database_search( ndi_query('','depends_on','element_id',ndi_vm_corrected_element.id()) & ...
-	ndi_query('','isa','vmneuralresponseresiduals.json','') & ndi_query('ndi_document.name','exact_string','Preferred response','') & ...
-	ndi_query('vmneuralresponseresiduals.element_epochid','exact_string',et(n).epoch_id,''))
+	vmresp_resid_doc = E.database_search( ndi.query('','depends_on','element_id',ndi_vm_corrected_element.id()) & ...
+	ndi.query('','isa','vmneuralresponseresiduals.json','') & ndi.query('ndi_document.name','exact_string','Preferred response','') & ...
+	ndi.query('vmneuralresponseresiduals.element_epochid','exact_string',et(n).epoch_id,''))
 
 	if ~isempty(vmresp_resid_doc),
 		out = intracell_strf_residual2waves(E, vmresp_resid_doc);
-		struct2var(out);
+		vlt.data.struct2var(out);
 	else,
 		return; % noelement to do
 	end;

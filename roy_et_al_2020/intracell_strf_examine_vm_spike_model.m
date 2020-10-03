@@ -13,15 +13,15 @@ function [fr, v, timepoints] = intracell_strf_examine_vm_spike_model(app, sharpp
 
 displayresults = 1;
 
-assign(varargin{:});
+vlt.data.assign(varargin{:});
 
 E = app.session;
 
 et = epochtable(sharpprobe);
 N = numel(et);
 
-iapp = ndi_app(E,'vhlab_voltage2firingrate');
-gapp = ndi_app_markgarbage(E);
+iapp = ndi.app(E,'vhlab_voltage2firingrate');
+gapp = ndi.app.markgarbage(E);
 
 % need to do many elements
 % pull out firing rate and vm observations
@@ -31,13 +31,13 @@ gapp = ndi_app_markgarbage(E);
 % need to check the relationship with full stimuli
 
 
-q_spikeratevmdoc = ndi_query('','isa','binnedspikeratevm.json','');  % old, legacy
-q_elementid = ndi_query('','depends_on','element_id',sharpprobe.id());
-q_fitcurvedoc = ndi_query('','isa','fitcurve.json','');
-q_lt = ndi_query('fitcurve.fit_name','exact_string','linethreshold','');
-q_lpt = ndi_query('fitcurve.fit_name','exact_string', 'linepowerthreshold','');
-q_lpt0 = ndi_query('fitcurve.fit_name','exact_string','linepowerthreshold_0','');
-q_tanh = ndi_query('fitcurve.fit_name','exact_string','tanhfitoffset','');
+q_spikeratevmdoc = ndi.query('','isa','binnedspikeratevm.json','');  % old, legacy
+q_elementid = ndi.query('','depends_on','element_id',sharpprobe.id());
+q_fitcurvedoc = ndi.query('','isa','fitcurve.json','');
+q_lt = ndi.query('fitcurve.fit_name','exact_string','linethreshold','');
+q_lpt = ndi.query('fitcurve.fit_name','exact_string', 'vlt.fit.linepowerthreshold','');
+q_lpt0 = ndi.query('fitcurve.fit_name','exact_string','linepowerthreshold_0','');
+q_tanh = ndi.query('fitcurve.fit_name','exact_string','vlt.fit.tanhfitoffset','');
 
 
 
@@ -53,9 +53,9 @@ for n=1:N,
 	[ds, ts, timeref_]=stimprobe.readtimeseries(timeref,interval(1,1),interval(1,2));
 	stim_onsetoffsetid = [ts.stimon ts.stimoff ds.stimid];
 	    
-	isblank = structfindfield(ds.parameters,'isblank',1);
+	isblank = vlt.data.structfindfield(ds.parameters,'isblank',1);
 	notblank = setdiff(1:numel(ds.parameters),isblank);
-	if eqlen(structwhatvaries(ds.parameters(notblank)),{'angle'})
+	if vlt.data.eqlen(vlt.data.structwhatvaries(ds.parameters(notblank)),{'angle'})
 		isdirectionepoch = 1;
 	end;
 	    
@@ -63,12 +63,12 @@ for n=1:N,
 		
 		tF = ds.parameters{1}.tFrequency;
 
-		q_epochid = ndi_query('epochid','exact_string',et(n).epoch_id,'');
+		q_epochid = ndi.query('epochid','exact_string',et(n).epoch_id,'');
 		
 		spikeratevmdoc = E.database_search(q_spikeratevmdoc & q_elementid & q_epochid);
 		if ~isempty(spikeratevmdoc),
-			spikeratevmdoc = celloritem(spikeratevmdoc,1);
-			struct2var(spikeratevmdoc.document_properties.binnedspikeratevm);
+			spikeratevmdoc = vlt.data.celloritem(spikeratevmdoc,1);
+			vlt.data.struct2var(spikeratevmdoc.document_properties.binnedspikeratevm);
 		end;
 		
 		% Step 1: plot data and fits
@@ -91,7 +91,7 @@ for n=1:N,
 		
 		subplot(2,2,2);
 		
-		[mean_v, mean_fr, mean_stimid, stimpres, vmobs, frobs] = voltage_firingrate_observations_per_stimulus(voltage_observations, ...
+		[mean_v, mean_fr, mean_stimid, stimpres, vmobs, frobs] = vlt.neuro.membrane.voltage_firingrate_observations_per_stimulus(voltage_observations, ...
 				firingrate_observations, timepoints, stim_onsetoffsetid);
 		
 		notblank = find(mean_stimid~=max(mean_stimid));
@@ -113,7 +113,7 @@ for n=1:N,
 		
 		% Step 3: Plot responses to stimuli and model responses with pulled tuning curves
 		
-		tapp = ndi_app_tuning_response(E);
+		tapp = ndi.app.stimulus.tuning_response(E);
 		
 		resps = {'mean','F1'};
 		spike_resp_doc = {};
@@ -135,11 +135,11 @@ for n=1:N,
 		for i=1:numel(resps),
 			vm_fr{i} = [];
 			for j=1:numel(vm_resp_doc{i}{1}.document_properties.tuning_curve.stimulus_presentation_number),
-				if ~eqlen( vm_resp_doc{i}{1}.document_properties.tuning_curve.stimulus_presentation_number{j},...
+				if ~vlt.data.eqlen( vm_resp_doc{i}{1}.document_properties.tuning_curve.stimulus_presentation_number{j},...
 					spike_resp_doc{i}{1}.document_properties.tuning_curve.stimulus_presentation_number{j}),
 					error(['mismatch in stimulus presentation numbers in individidual response records.']);
 				end;
-				if i==1, pres_numbers = cat(1,pres_numbers,colvec(spike_resp_doc{i}{1}.document_properties.tuning_curve.stimulus_presentation_number{j})); end;
+				if i==1, pres_numbers = cat(1,pres_numbers,vlt.data.colvec(spike_resp_doc{i}{1}.document_properties.tuning_curve.stimulus_presentation_number{j})); end;
 				vm_resps_here = vm_resp_doc{i}{1}.document_properties.tuning_curve.individual_responses_real{j} + ...
 					sqrt(-1)*vm_resp_doc{i}{1}.document_properties.tuning_curve.individual_responses_imaginary{j};
 				vm_control_resps_here = vm_resp_doc{i}{1}.document_properties.tuning_curve.control_individual_responses_real{j} + ...
@@ -148,7 +148,7 @@ for n=1:N,
 					sqrt(-1)*vm_resp_doc{i}{1}.document_properties.tuning_curve.individual_responses_imaginary{j};
 				s_control_resps_here = spike_resp_doc{i}{1}.document_properties.tuning_curve.control_individual_responses_real{j} + ...
 					sqrt(-1)*vm_resp_doc{i}{1}.document_properties.tuning_curve.control_individual_responses_imaginary{j};
-				vm_fr{i} = cat(1,vm_fr{i},[ colvec(vm_resps_here-0*vm_control_resps_here) colvec(s_resps_here-0*s_control_resps_here) ]);
+				vm_fr{i} = cat(1,vm_fr{i},[ vlt.data.colvec(vm_resps_here-0*vm_control_resps_here) vlt.data.colvec(s_resps_here-0*s_control_resps_here) ]);
 			end;
 		end;
 		
@@ -175,12 +175,12 @@ for n=1:N,
 			for j=1:size(vm_fr{1},1),
 				TT = 0:0.030:5;
 				VV = vm_fr{1}(j,1) + real(vm_fr{2}(j,1))*cos(2*pi*tF*TT) - imag(vm_fr{2}(j,1)) * sin(2*pi*tF*TT);
-				vm_fr{3}(j,2) = mean(ndi_evaluate_fitcurve(linepowerthresh_doc{1},VV));
-				vm_fr{4}(j,2) = ndi_evaluate_fitcurve(linepowerthresh_doc{1},VV(1));
-				vm_fr{5}(j,2) = ndi_evaluate_fitcurve(tanh_doc{1},VV(1));
+				vm_fr{3}(j,2) = mean(ndi.data.evaluate_fitcurve(linepowerthresh_doc{1},VV));
+				vm_fr{4}(j,2) = ndi.data.evaluate_fitcurve(linepowerthresh_doc{1},VV(1));
+				vm_fr{5}(j,2) = ndi.data.evaluate_fitcurve(tanh_doc{1},VV(1));
 				if ismember(pres_numbers(j),c),
 					g = find(stimpres==pres_numbers(j));
-					vm_fr{6}(j,2) = mean(ndi_evaluate_fitcurve(linepowerthresh_doc{1},vmobs{g}));
+					vm_fr{6}(j,2) = mean(ndi.data.evaluate_fitcurve(linepowerthresh_doc{1},vmobs{g}));
 					vm_generatedobs{g} = VV;
 					vm_fr{7}(j,1) = mean(frobs{g});
 				else,
@@ -221,11 +221,11 @@ for n=1:N,
 		for j=1:size(vm_fr{1},1),
 			if ismember(pres_numbers(j),c),
 				g = find(stimpres==pres_numbers(j));
-				ax = supersubplot(fig,3,3,j);
+				ax = vlt.plot.supersubplot(fig,3,3,j);
 				plot(0:0.030:(numel(vmobs{g})-1)*0.030, vmobs{g},'b');
 				hold on;
 				plot(TT, vm_generatedobs{g},'k');
-				f1here = fouriercoeffs_tf2(vmobs{g},tF,1/0.030);
+				f1here = vlt.math.fouriercoeffs_tf2(vmobs{g},tF,1/0.030);
 				mnhere = mean(vmobs{g});
 				VV2 = mnhere + real(f1here)*cos(2*pi*tF*TT)-imag(f1here)*sin(2*pi*tF*TT);
 				plot(TT,VV2,'g');
@@ -248,20 +248,20 @@ end;
  % TODO editing here
  
 global fit_curves_global
-fittypes = {'linethreshold','linepowerthreshold','tanhfitoffset','linepowerthreshold_0'};
+fittypes = {'linethreshold','vlt.fit.linepowerthreshold','vlt.fit.tanhfitoffset','linepowerthreshold_0'};
 colors = {'y','m','g','k'};
 voltages = -0.100:0.001:0.050;
-q_fitcurvedoc = ndi_query('','isa','fitcurve.json','');
-q_elementid = ndi_query('','depends_on','element_id',sharpprobe.id());
-q_epochid = ndi_query('epochid','exact_string',epochid,'');
+q_fitcurvedoc = ndi.query('','isa','fitcurve.json','');
+q_elementid = ndi.query('','depends_on','element_id',sharpprobe.id());
+q_epochid = ndi.query('epochid','exact_string',epochid,'');
 
 for i=1:numel(fittypes),
-	q_variable = ndi_query('fitcurve.fit_name','exact_string',fittypes{i},'');
+	q_variable = ndi.query('fitcurve.fit_name','exact_string',fittypes{i},'');
 	fitdoc = sharpprobe.session.database_search(q_fitcurvedoc & q_epochid & q_elementid & q_variable);
     
 	if ~isempty(fitdoc),
-		fitdoc = celloritem(fitdoc,1);
-		fr = ndi_evaluate_fitcurve(fitdoc,voltages);
+		fitdoc = vlt.data.celloritem(fitdoc,1);
+		fr = ndi.data.evaluate_fitcurve(fitdoc,voltages);
 		hold on;
 		plot(voltages,fr,colors{i},'linewidth',2);
 	end;
@@ -270,7 +270,7 @@ box off;
 axis([-0.010 0.050 -2 200]);
 
 if doglobal,
-	myfit_curves_global = var2struct('voltages','fr','fitdoc');
+	myfit_curves_global = vlt.data.var2struct('voltages','fr','fitdoc');
 	myfit_curves_global.fittype = fittypes{i};
 	myfit_curves_global.name = [sharpprobe.probestring '@' epochid];
 	myfit_curves_global.reference = E.id();

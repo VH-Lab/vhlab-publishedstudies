@@ -4,8 +4,8 @@ fy = '~/tools/matlab/vhlab-intracellrfs-matlab/intracellular data index - young.
 
 fo = '~/tools/matlab/vhlab-intracellrfs-matlab/intracellular data index - old.tsv';
 
-zy = loadStructArray(fy);
-zo = loadStructArray(fo);
+zy = vlt.file.loadStructArray(fy);
+zo = vlt.file.loadStructArray(fo);
 
 expnames_young = {};
 expnames_old = {};
@@ -21,18 +21,18 @@ end;
 expnames_young = unique(expnames_young);
 expnames_old = unique(expnames_old);
 
-isstudy = emptystruct('prefix','expername','young','E');
+isstudy = vlt.data.emptystruct('prefix','expername','young','E');
 
 E_young = {};
 E_old = {};
 
 for i=1:numel(expnames_young),
-	E_young{i} = ndi_session_dir([prefix filesep expnames_young{i}]);
+	E_young{i} = ndi.session.dir([prefix filesep expnames_young{i}]);
 	isstudy(end+1) = struct('prefix',prefix,'expername',expnames_young{i},'young',1,'E',E_young{i});
 end;
 
 for i=1:numel(expnames_old),
-	E_old{i} = ndi_session_dir([prefix filesep expnames_old{i}]);
+	E_old{i} = ndi.session.dir([prefix filesep expnames_old{i}]);
 	isstudy(end+1) = struct('prefix',prefix,'expername',expnames_old{i},'young',0,'E',E_old{i});
 end;
 

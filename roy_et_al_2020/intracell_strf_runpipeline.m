@@ -1,4 +1,4 @@
-f = '~/tools/matlab/vhlab-intracellrfs-matlab/intracellular data index - young.tsv';
+f = '~/tools/matlab/vhlab-publishedstudies/roy_et_al_2020/intracellular data index - young.tsv';
 
 if 0,
 	f = '~/tools/matlab/vhlab-intracellrfs-matlab/intracellular data index - old.tsv';
@@ -6,7 +6,7 @@ end
 
 prefix = ['/Volumes/van-hooser-lab/Users/steve/araniintracellular'];
 
-z = loadStructArray(f);
+z = vlt.file.loadStructArray(f);
 	
 if 0, intracell_strf_markgarbage_all(z,prefix); end;
 

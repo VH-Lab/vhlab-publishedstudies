@@ -3,14 +3,14 @@ function [out] = intracell_strf_residual2waves(E, vmresp_resid_doc)
 %
 % [OUT] = INTRACELL_STRF_RESIDUAL2WAVES(E, VMRESP_RESID_DOC)
 %
-% Given an NDI_DOCUMENT of type 'vmresponseresiduals.json' and NDI_EXPERIMENT object E, this function reads the waves TT,
+% Given an ndi.document of type 'vmresponseresiduals.json' and NDI_EXPERIMENT object E, this function reads the waves TT,
 % raw_data, VV, rawer_data, and the residual res from the binary fork. These variables are returned in a structure, OUT.
 %
 %
 
 if ~isempty(vmresp_resid_doc),
 	vmresp_binarydoc = E.database_openbinarydoc(vmresp_resid_doc{1});
-	[Y,X] = vhsb_read(vmresp_binarydoc,-Inf,Inf);
+	[Y,X] = vlt.file.custom_file_formats.vhsb_read(vmresp_binarydoc,-Inf,Inf);
 	vmresp_binarydoc = E.database_closebinarydoc(vmresp_binarydoc);
 
 	% now unpack
@@ -28,5 +28,5 @@ if ~isempty(vmresp_resid_doc),
 	end;
 end;
 
-out = var2struct('TT','raw_data','VV','rawer_data','res', 'spike_data', 'gof');
+out = vlt.data.var2struct('TT','raw_data','VV','rawer_data','res', 'spike_data', 'gof');
 

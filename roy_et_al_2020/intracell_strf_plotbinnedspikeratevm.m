@@ -13,14 +13,14 @@ function [firingrate_observations, voltage_observations, timepoints] = intracell
 
 epochid = [];
 
-assign(varargin{:});
+vlt.data.assign(varargin{:});
 
 firingrate_observations = [];
 voltage_observations = [];
 timepoints = [];
 
 E = app.session;
-iapp = ndi_app(E,'vhlab_voltage2firingrate');
+iapp = ndi.app(E,'vhlab_voltage2firingrate');
 
 if isempty(epochid),
 	et = epochtable(sharpprobe);
@@ -32,16 +32,16 @@ if isempty(epochid),
 	return;
 end;
 
-mydoc =E.database_search(ndi_query('','isa','binnedspikeratevm.json','') & ...
-	ndi_query('epochid','exact_string',epochid,'') & ndi_query('','depends_on','element_id',sharpprobe.id()));
+mydoc =E.database_search(ndi.query('','isa','binnedspikeratevm.json','') & ...
+	ndi.query('epochid','exact_string',epochid,'') & ndi.query('','depends_on','element_id',sharpprobe.id()));
 
 if numel(mydoc)>1, error(['More than a single match.']); end; 
 
 if numel(mydoc)==0, return; end;
 
-mydoc = celloritem(mydoc,1);
+mydoc = vlt.data.celloritem(mydoc,1);
 
-struct2var(mydoc.document_properties.binnedspikeratevm);
+vlt.data.struct2var(mydoc.document_properties.binnedspikeratevm);
 
 plot(voltage_observations, firingrate_observations,'bo');
 xlabel('Voltage (Vm-rest)');
@@ -53,13 +53,13 @@ Xn = [];
 Yint = [];
 
 if ~isempty(firingrate_observations),
-	[Yn,Xn,Yint] = slidingwindowfunc(voltage_observations, firingrate_observations, ...
+	[Yn,Xn,Yint] = vlt.math.slidingwindowfunc(voltage_observations, firingrate_observations, ...
 		min(voltage_observations), 0.001, max(voltage_observations), 0.002, 'mean',0);
-	[Nn] = slidingwindowfunc(voltage_observations, firingrate_observations, ...
+	[Nn] = vlt.math.slidingwindowfunc(voltage_observations, firingrate_observations, ...
 		min(voltage_observations), 0.001, max(voltage_observations), 0.002, 'numel',0);
 
 	hold on
-	h=myerrorbar(Xn,Yn,Yint,Yint,'r');
+	h=vlt.plot.myerrorbar(Xn,Yn,Yint,Yint,'r');
 	set(h,'linewidth',2);
 end
 
