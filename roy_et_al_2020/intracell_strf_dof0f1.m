@@ -45,7 +45,7 @@ rapp.stimulus_responses(stimprobe, ndi_element_obj, 1);
 
 rdoc = E.database_search(q_rdoc&q_e&q_relement)
 
-tdoc = oapp.calculate_tuning_curve(ndi_element_obj)
+tdoc = oapp.calculate_all_tuning_curves(ndi_element_obj,'Replace')
 
-oriprops = oapp.calculate_all_oridir_indexes(ndi_element_obj);
+oriprops = oapp.calculate_all_oridir_indexes(ndi_element_obj,'Replace');
 

@@ -281,6 +281,7 @@ if analyze_spikewaves,
 	sharpprobes = getprobes(E, 'type', 'sharp-Vm');
 
 	for i=1:numel(sharpprobes),
+		disp('analyzing spike waves')
 		intracell_strf_analyzespikewaves(app, sharpprobes{i}, 'displayresults',displayresults);
 	end
 end;
