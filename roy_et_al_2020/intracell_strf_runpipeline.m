@@ -1,7 +1,7 @@
 f = '~/tools/matlab/vhlab-publishedstudies/roy_et_al_2020/intracellular data index - young.tsv';
 
 if 0,
-	f = '~/tools/matlab/vhlab-intracellrfs-matlab/intracellular data index - old.tsv';
+	f = '~/tools/matlab/vhlab-publishedstudies/roy_et_al_2020/intracellular data index - old.tsv';
 end
 
 prefix = ['/Volumes/van-hooser-lab/Users/steve/araniintracellular'];

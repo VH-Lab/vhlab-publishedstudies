@@ -19,7 +19,7 @@ sapp = ndi.app.spikeextractor(E);
 element_vmcorrected = E.getelements('element.type','Vm_corrected','element.name',sharpprobe.elementstring());
 element_vmcorrected = vlt.data.celloritem(element_vmcorrected,1);
 
-et = epochtable(element_vmcorrected);
+et = epochtable(element_vmcorrected)
 N = numel(et);
 
 for n=1:N,
@@ -129,7 +129,11 @@ for n=1:N,
 			ylabel('Voltage (V)')
 		else,   % plot spike phase diagram
 			dt = t(2)-t(1);
-			[dummy,gz_grad] = gradient(gz,dt);
+			if size(gz,2)==1,
+				[gz_grad] = gradient(gz,dt); % gradient always assumes X-dominated if a single dimension
+			else,
+				[dummy,gz_grad] = gradient(gz,dt);
+			end;
 			plot(gz(15:end-15,:),gz_grad(15:end-15,:));
 			title('Phase diagram');
 			xlabel('Voltage (V)')
