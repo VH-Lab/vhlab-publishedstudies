@@ -40,7 +40,7 @@ s=vlt.data.workspace2struct
 
 [parentdir,expname] = fileparts(expdir)
 
-E = ndi.setups.vhlab_expdir(expname, expdir);
+E = ndi.setup.vhlab(expname, expdir);
 
  % if we have any stale element reference documents, delete them
 d = ndi.database.fun.finddocs_missing_dependencies(E),

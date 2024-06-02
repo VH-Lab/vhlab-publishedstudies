@@ -23,7 +23,7 @@ for i=1:numel(z),
 	expdatenum = datenum(z(i).Date);
 	expname = datestr(expdatenum,'yyyy-mm-dd');
 
-	E = ndi.setups.vhlab_expdir(expname,[prefix filesep expname]);
+	E = ndi.setup.vhlab(expname,[prefix filesep expname]);
 	
 	gapp = ndi.app.markgarbage(E);
 
